@@ -15,6 +15,9 @@ import {
 } from "next-sanity";
 
 import ResolvedLink from "@/app/components/ResolvedLink";
+import TwitterEmbed from "@/app/components/TwitterEmbed";
+import VimeoEmbed from "@/app/components/VimeoEmbed";
+import SanityImage from "@/app/components/SanityImage";
 
 export default function CustomPortableText({
   className,
@@ -82,6 +85,11 @@ export default function CustomPortableText({
       link: ({ children, value: link }) => {
         return <ResolvedLink link={link}>{children}</ResolvedLink>;
       },
+    },
+    types: {
+      image: ({ value }) => <SanityImage value={value} />,
+      twitterEmbed: ({ value }) => <TwitterEmbed value={value} />,
+      vimeoEmbed: ({ value }) => <VimeoEmbed value={value} />,
     },
   };
 

@@ -1,12 +1,10 @@
-import Link from "next/link";
-
 import { sanityFetch } from "@/sanity/lib/live";
 import { morePostsQuery, allPostsQuery } from "@/sanity/lib/queries";
 import { Post as PostType } from "@/sanity.types";
 import DateComponent from "@/app/components/Date";
 import OnBoarding from "@/app/components/Onboarding";
 
-const Post = ({ post }: { post: PostType }) => {
+export const Post = ({ post }: { post: PostType }) => {
   const { _id, title, slug, excerpt, date } = post;
 
   return (
@@ -19,12 +17,12 @@ const Post = ({ post }: { post: PostType }) => {
       </div>
 
       <h3 className="mt-3 text-2xl font-semibold">
-        <Link
+        <a
           className="hover:text-red-500 underline transition-colors"
           href={`/posts/${slug}`}
         >
           {title}
-        </Link>
+        </a>
       </h3>
       <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
         {excerpt}

@@ -118,7 +118,13 @@ export const projectArchiveQuery = defineQuery(`
     title,
     "slug": slug.current,
     excerpt,
-    coverImage,
+    "coverImage": {
+      "asset": coalesce(coverImage.asset, {"_ref": "", "_type": "reference"}),
+      "hotspot": coverImage.hotspot,
+      "crop": coverImage.crop,
+      "alt": coverImage.alt,
+      "_type": "image"
+    },
     "date": coalesce(date, _updatedAt),
     "location": projectLocation,
     "year": projectYear,
@@ -160,3 +166,12 @@ export function getUniqueValues(posts: any[], field: string) {
     return String(a).localeCompare(String(b));
   });
 }
+
+export const headerBioBitsQuery = defineQuery(`
+  *[_type == "headerBioBits"] | order(order asc) {
+    _id,
+    title,
+    content,
+    order
+  }
+`);

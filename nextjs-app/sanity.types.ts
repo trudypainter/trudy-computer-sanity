@@ -717,22 +717,25 @@ export type PagesSlugsResult = Array<{
 // Query: *[_type == "about"][0]{    profileImage {      asset,      alt,    },    photographerName,    photographerUrl,    fullBio,    bioSections[] {      title,      content    }  }
 export type AboutPageQueryResult = null;
 // Variable: projectArchiveQuery
-// Query: *[_type == "post"] | order(date desc) {    _id,    title,    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "location": projectLocation,    "year": projectYear,    "projectTags": projectTags[]->{ _id, name, slug }  }
+// Query: *[_type == "post"] | order(date desc) {    _id,    title,    "slug": slug.current,    excerpt,    "coverImage": {      "asset": coalesce(coverImage.asset, {"_ref": "", "_type": "reference"}),      "hotspot": coverImage.hotspot,      "crop": coverImage.crop,      "alt": coverImage.alt,      "_type": "image"    },    "date": coalesce(date, _updatedAt),    "location": projectLocation,    "year": projectYear,    "projectTags": projectTags[]->{ _id, name, slug }  }
 export type ProjectArchiveQueryResult = Array<{
   _id: string;
   title: string;
   slug: string;
   excerpt: string | null;
   coverImage: {
-    asset?: {
+    asset: {
+      _ref: "";
+      _type: "reference";
+    } | {
       _ref: string;
       _type: "reference";
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
+    hotspot: SanityImageHotspot | null;
+    crop: SanityImageCrop | null;
+    alt: string | null;
     _type: "image";
   };
   date: string;
@@ -740,6 +743,9 @@ export type ProjectArchiveQueryResult = Array<{
   year: null;
   projectTags: null;
 }>;
+// Variable: headerBioBitsQuery
+// Query: *[_type == "headerBioBits"] | order(order asc) {    _id,    title,    content,    order  }
+export type HeaderBioBitsQueryResult = Array<never>;
 
 // Query TypeMap
 import "@sanity/client";
@@ -754,6 +760,7 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
     "\n  *[_type == \"about\"][0]{\n    profileImage {\n      asset,\n      alt,\n    },\n    photographerName,\n    photographerUrl,\n    fullBio,\n    bioSections[] {\n      title,\n      content\n    }\n  }\n": AboutPageQueryResult;
-    "\n  *[_type == \"post\"] | order(date desc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"location\": projectLocation,\n    \"year\": projectYear,\n    \"projectTags\": projectTags[]->{ _id, name, slug }\n  }\n": ProjectArchiveQueryResult;
+    "\n  *[_type == \"post\"] | order(date desc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    excerpt,\n    \"coverImage\": {\n      \"asset\": coalesce(coverImage.asset, {\"_ref\": \"\", \"_type\": \"reference\"}),\n      \"hotspot\": coverImage.hotspot,\n      \"crop\": coverImage.crop,\n      \"alt\": coverImage.alt,\n      \"_type\": \"image\"\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"location\": projectLocation,\n    \"year\": projectYear,\n    \"projectTags\": projectTags[]->{ _id, name, slug }\n  }\n": ProjectArchiveQueryResult;
+    "\n  *[_type == \"headerBioBits\"] | order(order asc) {\n    _id,\n    title,\n    content,\n    order\n  }\n": HeaderBioBitsQueryResult;
   }
 }
