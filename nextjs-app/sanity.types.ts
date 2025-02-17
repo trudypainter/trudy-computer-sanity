@@ -713,6 +713,33 @@ export type PostPagesSlugsResult = Array<{
 export type PagesSlugsResult = Array<{
   slug: string;
 }>;
+// Variable: aboutPageQuery
+// Query: *[_type == "about"][0]{    profileImage {      asset,      alt,    },    photographerName,    photographerUrl,    fullBio,    bioSections[] {      title,      content    }  }
+export type AboutPageQueryResult = null;
+// Variable: projectArchiveQuery
+// Query: *[_type == "post"] | order(date desc) {    _id,    title,    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "location": projectLocation,    "year": projectYear,    "projectTags": projectTags[]->{ _id, name, slug }  }
+export type ProjectArchiveQueryResult = Array<{
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  date: string;
+  location: null;
+  year: null;
+  projectTags: null;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
@@ -726,5 +753,7 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
+    "\n  *[_type == \"about\"][0]{\n    profileImage {\n      asset,\n      alt,\n    },\n    photographerName,\n    photographerUrl,\n    fullBio,\n    bioSections[] {\n      title,\n      content\n    }\n  }\n": AboutPageQueryResult;
+    "\n  *[_type == \"post\"] | order(date desc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"location\": projectLocation,\n    \"year\": projectYear,\n    \"projectTags\": projectTags[]->{ _id, name, slug }\n  }\n": ProjectArchiveQueryResult;
   }
 }

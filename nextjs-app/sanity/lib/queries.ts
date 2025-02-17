@@ -95,3 +95,68 @@ export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
   {"slug": slug.current}
 `);
+
+export const aboutPageQuery = defineQuery(`
+  *[_type == "about"][0]{
+    profileImage {
+      asset,
+      alt,
+    },
+    photographerName,
+    photographerUrl,
+    fullBio,
+    bioSections[] {
+      title,
+      content
+    }
+  }
+`);
+
+export const projectArchiveQuery = defineQuery(`
+  *[_type == "post"] | order(date desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    coverImage,
+    "date": coalesce(date, _updatedAt),
+    "location": projectLocation,
+    "year": projectYear,
+    "projectTags": projectTags[]->{ _id, name, slug }
+  }
+`);
+
+// Helper function to get unique values from an array of posts
+export function getUniqueValues(posts: any[], field: string) {
+  if (field === "projectTags") {
+    // For tags, collect all unique tags across all posts
+    const tagsMap = new Map();
+    posts.forEach((post) => {
+      if (post.projectTags) {
+        post.projectTags.forEach(
+          (tag: { _id: string; name: string; slug: string }) => {
+            tagsMap.set(tag._id, tag);
+          }
+        );
+      }
+    });
+    return Array.from(tagsMap.values());
+  }
+
+  // For other fields (location, year), keep existing behavior
+  const values = new Set<string>();
+  posts.forEach((post) => {
+    if (post[field]) {
+      values.add(post[field]);
+    }
+  });
+
+  return Array.from(values).sort((a, b) => {
+    // Special sorting for years to be in reverse order (newest first)
+    if (field === "year") {
+      return parseInt(b) - parseInt(a);
+    }
+    // For strings, use localeCompare
+    return String(a).localeCompare(String(b));
+  });
+}
