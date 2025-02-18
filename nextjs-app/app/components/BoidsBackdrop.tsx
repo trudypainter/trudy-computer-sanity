@@ -309,14 +309,23 @@ export const BoidsBackdrop = () => {
     };
   }, []); // Empty dependency array - only run on mount
 
-  // Handle parameter updates without reinitializing everything
+  // Handle parameter updates by reinitializing boids and updating animation
   useEffect(() => {
-    console.log("🔄 Boids parameters updated:", parameters);
+    console.log("🔄 Boids parameters updated in backdrop:", parameters);
 
-    // Reinitialize boids when parameters change (especially for BOID_COUNT changes)
+    // Reinitialize boids when parameters change
     const canvas = canvasRef.current;
     if (canvas) {
+      // Cancel current animation frame before reinitializing
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+
+      // Reinitialize boids with new parameters
       boidsRef.current = initializeBoids(canvas.width, canvas.height);
+
+      // Restart animation loop
+      animationFrameRef.current = requestAnimationFrame(animate);
     }
   }, [parameters]);
 

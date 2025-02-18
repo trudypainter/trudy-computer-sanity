@@ -104,7 +104,12 @@ export function BoidsProvider({ children }: { children: ReactNode }) {
   const updateParameters = (newParams: Partial<BoidsParameters>) => {
     console.log("🔄 Updating boid parameters:", newParams);
     setParameters((prev) => {
-      const updated = { ...prev, ...newParams };
+      // Ensure all required parameters are present
+      const updated = {
+        ...defaultParameters, // Start with defaults
+        ...prev, // Apply current parameters
+        ...newParams, // Apply new parameters
+      };
       console.log("📊 New boid parameters:", updated);
       return updated;
     });
