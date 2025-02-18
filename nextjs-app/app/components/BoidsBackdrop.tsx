@@ -22,6 +22,18 @@ export const BoidsBackdrop = () => {
   const boidsRef = useRef<Boid[]>([]);
   const animationFrameRef = useRef<number>();
   const mouseRef = useRef<MousePosition>({ x: 0, y: 0 });
+  const lastSizeRef = useRef<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
+  const resizeTimeoutRef = useRef<NodeJS.Timeout>();
+
+  // Detect iOS
+  const isIOS = useRef(
+    typeof window !== "undefined" &&
+      /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+      !(window as any).MSStream
+  );
 
   const initializeBoids = (width: number, height: number) => {
     console.log("🎯 Initializing boids with parameters:", parameters);
@@ -238,9 +250,36 @@ export const BoidsBackdrop = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      boidsRef.current = initializeBoids(canvas.width, canvas.height);
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      // For iOS, only update if the size change is significant (>50px)
+      // This prevents URL bar show/hide from triggering updates
+      if (isIOS.current) {
+        const widthDiff = Math.abs(newWidth - lastSizeRef.current.width);
+        const heightDiff = Math.abs(newHeight - lastSizeRef.current.height);
+
+        if (widthDiff < 50 && heightDiff < 50) {
+          return;
+        }
+      }
+
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      lastSizeRef.current = { width: newWidth, height: newHeight };
+      boidsRef.current = initializeBoids(newWidth, newHeight);
+    };
+
+    const handleResize = () => {
+      // Clear any existing timeout
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+
+      // Debounce resize events
+      resizeTimeoutRef.current = setTimeout(() => {
+        updateSize();
+      }, 100); // 100ms debounce
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -252,14 +291,17 @@ export const BoidsBackdrop = () => {
 
     // Initial setup
     updateSize();
-    window.addEventListener("resize", updateSize);
+    window.addEventListener("resize", handleResize);
     window.addEventListener("mousemove", handleMouseMove);
 
     // Start animation
     animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener("resize", updateSize);
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
