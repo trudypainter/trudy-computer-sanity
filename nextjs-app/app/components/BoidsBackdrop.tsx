@@ -312,7 +312,12 @@ export const BoidsBackdrop = () => {
   // Handle parameter updates without reinitializing everything
   useEffect(() => {
     console.log("🔄 Boids parameters updated:", parameters);
-    // No need to reinitialize everything - the animation loop will use the new parameters automatically
+
+    // Reinitialize boids when parameters change (especially for BOID_COUNT changes)
+    const canvas = canvasRef.current;
+    if (canvas) {
+      boidsRef.current = initializeBoids(canvas.width, canvas.height);
+    }
   }, [parameters]);
 
   return (

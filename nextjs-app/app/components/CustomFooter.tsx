@@ -40,7 +40,7 @@ export const CustomFooter = () => {
         transition-colors
       `}
     >
-      <div className="flex justify-between">
+      <div className="flex text-sm md:text-base justify-between">
         <span className="">© 2025 Trudy Painter</span>
         <span className="">Source code</span>
       </div>

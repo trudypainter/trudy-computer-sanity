@@ -20,7 +20,7 @@ export default async function AboutPage() {
       <div className="container mx-auto px-4 pt-8 sm:py-12">
         <div className="flex flex-col md:flex-row gap-12">
           {/* Left Column - Profile Picture */}
-          <div className="w-full md:w-1/3">
+          <div className="w-1/2 md:w-1/3">
             <div className="md:sticky md:top-24 rounded-t-3xl overflow-hidden">
               <div className="relative">
                 <SanityImage
