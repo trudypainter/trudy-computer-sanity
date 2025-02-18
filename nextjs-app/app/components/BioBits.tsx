@@ -280,10 +280,10 @@ export const BioBits = ({ data }: { data: BioBit[] }) => {
       <div className={`space-y-8 ${textColorClass}`}>
         {data.map((bit: BioBit) => (
           <section key={bit._id} className="space-y-1">
-            <h2 className={`font-mono text-xs ${titleColorClass}`}>
+            <h2 className={`font-mono text-sm ${titleColorClass}`}>
               {bit.title.toUpperCase()}
             </h2>
-            <div className="text-sm">{bit.content}</div>
+            <div className="text-base">{bit.content}</div>
           </section>
         ))}
       </div>
@@ -292,14 +292,14 @@ export const BioBits = ({ data }: { data: BioBit[] }) => {
       <div className="space-y-0">
         <button
           onClick={() => setShowMadlibs(!showMadlibs)}
-          className={`text-xs font-mono text-gray-600 px-3 py-1.5 rounded bg-gray-200 hover:text-gray-900 transition-colors flex items-center gap-2 ${
+          className={`text-sm font-mono text-gray-700 px-3 py-1.5 rounded bg-gray-200 hover:text-gray-900 transition-colors flex items-center gap-2 ${
             showMadlibs ? "rounded-b-none" : ""
           }`}
         >
           {showMadlibs ? (
-            <X size={14} className="text-gray-600" />
+            <X size={14} className="text-gray-700" />
           ) : (
-            <Sparkles size={14} className="text-gray-600" />
+            <Sparkles size={14} className="text-gray-700" />
           )}
           {showMadlibs ? "Close" : "Generate new background"}
         </button>

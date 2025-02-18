@@ -28,15 +28,21 @@ type ArchivePostType = {
   }> | null;
 };
 
+const ProjectTag = ({ text }: { text: string }) => (
+  <span className="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600">
+    {text}
+  </span>
+);
+
 export const ArchivePost = ({ post }: { post: ArchivePostType }) => {
   const { title, slug, coverImage, location, year, projectTags, excerpt } =
     post;
 
   return (
     <Link href={`/posts/${slug}`}>
-      <article className="bg-gray-100 rounded-lg overflow-hidden hover:bg-gray-200 transition-colors">
-        <div className="flex flex-row gap-4 p-4">
-          <div className="w-48">
+      <article className="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition-colors">
+        <div className="flex flex-row gap-3 p-4">
+          <div className="w-32">
             <SanityImage
               value={{
                 asset: post.coverImage.asset,
@@ -56,24 +62,11 @@ export const ArchivePost = ({ post }: { post: ArchivePostType }) => {
               )}
             </div>
             <div className="flex flex-wrap gap-2">
-              {location && (
-                <span className="text-xs px-3 py-1 rounded-full bg-gray-200 text-gray-600">
-                  {location}
-                </span>
-              )}
-              {year && (
-                <span className="text-xs px-3 py-1 rounded-full bg-gray-200 text-gray-600">
-                  {year}
-                </span>
-              )}
+              {location && <ProjectTag text={location} />}
+              {year && <ProjectTag text={year} />}
               {projectTags &&
                 projectTags.map((tag) => (
-                  <span
-                    key={tag._id}
-                    className="text-xs px-3 py-1 rounded-full bg-gray-200 text-gray-600"
-                  >
-                    {tag.name}
-                  </span>
+                  <ProjectTag key={tag._id} text={tag.name} />
                 ))}
             </div>
           </div>

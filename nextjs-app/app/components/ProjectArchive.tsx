@@ -54,13 +54,26 @@ export function ProjectArchive({
 
   // Filter projects based on selected filters
   const filteredProjects = projects.filter((project) => {
+    // If no filters are selected, show all projects
+    if (
+      selectedLocation.length === 0 &&
+      selectedYears.length === 0 &&
+      selectedTags.length === 0
+    ) {
+      return true;
+    }
+
+    // Check if project matches any of the selected locations
     const locationMatch =
       selectedLocation.length === 0 ||
       (project.location && selectedLocation.includes(project.location));
+
+    // Check if project matches any of the selected years
     const yearMatch =
       selectedYears.length === 0 ||
       (project.year && selectedYears.includes(project.year));
 
+    // Check if project matches any of the selected tags
     const tagMatch =
       selectedTags.length === 0 ||
       (project.projectTags &&
@@ -68,7 +81,12 @@ export function ProjectArchive({
           selectedTags.includes(projectTag._id)
         ));
 
-    return locationMatch && yearMatch && tagMatch;
+    // Show project if it matches ANY of the selected filters
+    return (
+      (selectedLocation.length > 0 && locationMatch) ||
+      (selectedYears.length > 0 && yearMatch) ||
+      (selectedTags.length > 0 && tagMatch)
+    );
   });
 
   return (
@@ -93,7 +111,7 @@ export function ProjectArchive({
         </div>
       </div>
 
-      <div className="w-full md:w-2/3 mt-16">
+      <div className="w-full md:w-2/3 mt-0 md:mt-6">
         <div className="grid grid-cols-1 gap-4">
           {filteredProjects.map((project) => (
             <div key={project._id} className="w-full">

@@ -7,9 +7,11 @@ export default function Header() {
             className="flex items-center gap-2 hover:opacity-75 transition-opacity"
             href="/"
           >
-            <span className="font-medium">
-              <span className="text-gray-500 text-xl">◼</span>
-              Trudy Painter
+            <span className="font-medium flex items-center">
+              <span className="text-gray-500 text-xl leading-none align-middle mt-0.5">
+                ◼
+              </span>
+              <span className="ml-0.5">Trudy Painter</span>
             </span>
           </a>
 
