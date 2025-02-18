@@ -92,5 +92,80 @@ export const blockContent = defineType({
         ],
       },
     }),
+    // Image
+    defineArrayMember({
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        defineField({
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative text',
+          description: 'Important for SEO and accessibility.',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+          description: 'Optional caption to display below the image',
+        }),
+      ],
+    }),
+    // Video Upload
+    defineArrayMember({
+      name: 'video',
+      type: 'file',
+      title: 'Video',
+      options: {
+        accept: 'video/*',
+      },
+      fields: [
+        defineField({
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+          description: 'Optional caption to display below the video',
+        }),
+      ],
+    }),
+    // Vimeo Embed
+    defineArrayMember({
+      name: 'vimeoEmbed',
+      type: 'object',
+      title: 'Vimeo Embed',
+      fields: [
+        defineField({
+          name: 'url',
+          type: 'url',
+          title: 'Vimeo URL',
+          description: 'Paste the Vimeo video URL here',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+          description: 'Optional caption to display below the video',
+        }),
+      ],
+    }),
+    // Twitter Embed
+    defineArrayMember({
+      name: 'twitterEmbed',
+      type: 'object',
+      title: 'Twitter/X Embed',
+      fields: [
+        defineField({
+          name: 'url',
+          type: 'url',
+          title: 'Tweet URL',
+          description: 'Paste the Tweet URL here',
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
+    }),
   ],
 })
