@@ -8,8 +8,8 @@ export default function Header() {
             href="/"
           >
             <span className="font-medium">
-              <span className="text-gray-500 translate-y-[2px]">◼</span> Trudy
-              Painter
+              <span className="text-gray-500 text-xl">◼</span>
+              Trudy Painter
             </span>
           </a>
 

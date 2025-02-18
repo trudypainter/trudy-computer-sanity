@@ -10,10 +10,10 @@ function FilterButton({ label, isSelected, onClick }: FilterButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1 rounded-full text-xs border ${
+      className={`px-2 py-1 rounded text-xs ${
         isSelected
-          ? "bg-gray-900 text-white border-gray-900"
-          : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+          ? "bg-gray-400 text-gray-100 border-gray-900"
+          : "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200"
       }`}
     >
       {label}
@@ -63,10 +63,10 @@ export function FilterMenu({
   };
 
   return (
-    <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+    <div className="space-y-4 rounded-lg">
       <div className="space-y-2">
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm font-mono text-gray-500">Location:</span>
+          <span className="text-xs font-mono text-gray-500">Location:</span>
           {locations.map((location) => (
             <FilterButton
               key={location}
@@ -80,7 +80,7 @@ export function FilterMenu({
         </div>
 
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm font-mono text-gray-500">Years:</span>
+          <span className="text-xs font-mono text-gray-500">Years:</span>
           {years.map((year) => (
             <FilterButton
               key={year}
@@ -92,7 +92,7 @@ export function FilterMenu({
         </div>
 
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm font-mono text-gray-500">Tags:</span>
+          <span className="text-xs font-mono text-gray-500">Tags:</span>
           {tags.map((tag) => (
             <FilterButton
               key={tag._id}

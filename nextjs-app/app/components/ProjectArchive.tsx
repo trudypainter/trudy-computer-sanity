@@ -74,12 +74,9 @@ export function ProjectArchive({
   return (
     <div className="flex flex-col md:flex-row gap-8">
       <div className="w-full md:w-1/3">
-        <div className="sticky top-24 space-y-4">
+        <div className="sticky top-24 space-y-2">
           <div className="space-y-2">
             <h2 className="font-mono text-sm text-gray-500">PROJECT ARCHIVE</h2>
-            <p className="text-sm text-gray-600">
-              All projects, big and small.
-            </p>
           </div>
 
           <FilterMenu
