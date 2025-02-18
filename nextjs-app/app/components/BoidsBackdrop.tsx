@@ -229,12 +229,15 @@ export const BoidsBackdrop = () => {
     animationFrameRef.current = requestAnimationFrame(animate);
   };
 
+  // Initialize canvas and event listeners only once on mount
   useEffect(() => {
-    console.log("🔄 Boids parameters updated:", parameters);
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const updateSize = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       boidsRef.current = initializeBoids(canvas.width, canvas.height);
@@ -247,10 +250,12 @@ export const BoidsBackdrop = () => {
       };
     };
 
+    // Initial setup
     updateSize();
     window.addEventListener("resize", updateSize);
     window.addEventListener("mousemove", handleMouseMove);
 
+    // Start animation
     animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
@@ -260,6 +265,12 @@ export const BoidsBackdrop = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
+  }, []); // Empty dependency array - only run on mount
+
+  // Handle parameter updates without reinitializing everything
+  useEffect(() => {
+    console.log("🔄 Boids parameters updated:", parameters);
+    // No need to reinitialize everything - the animation loop will use the new parameters automatically
   }, [parameters]);
 
   return (

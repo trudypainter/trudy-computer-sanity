@@ -91,7 +91,7 @@ export function ProjectArchive({
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
-      <div className="w-full md:w-1/3">
+      <div className="hidden md:block w-full md:w-1/3">
         <div className="sticky top-24 space-y-2">
           <div className="space-y-2">
             <h2 className="font-mono text-sm text-gray-500">PROJECT ARCHIVE</h2>
@@ -111,7 +111,7 @@ export function ProjectArchive({
         </div>
       </div>
 
-      <div className="w-full md:w-2/3 mt-0 md:mt-6">
+      <div className="w-full md:w-2/3">
         <div className="grid grid-cols-1 gap-4">
           {filteredProjects.map((project) => (
             <div key={project._id} className="w-full">

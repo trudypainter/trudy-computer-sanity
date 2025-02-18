@@ -44,9 +44,9 @@ export const CustomFooter = () => {
         <span className="">© 2025 Trudy Painter</span>
         <span className="">Source code</span>
       </div>
-      <div className="mt-4 md:w-1/3 w-full">
-        Hey thanks for scrolling... If you made it this far, we probably have
-        some shared interests. Sincerely, send me an email{" "}
+      <div className="mt-4 text-sm md:w-1/3 w-full">
+        Thanks for scrolling... If you made it this far, we probably have some
+        shared interests. Send me an email{" "}
         <a href="mailto:hello@trudy.computer" className="underline">
           hello@trudy.computer
         </a>
