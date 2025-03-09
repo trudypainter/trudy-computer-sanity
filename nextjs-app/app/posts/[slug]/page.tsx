@@ -26,6 +26,24 @@ type PostLink = {
   href: string;
 };
 
+// Define a more specific post type that includes the fields we need
+interface Post {
+  _id: string;
+  title: string;
+  excerpt?: string;
+  coverImage: any;
+  content?: PortableTextBlock[];
+  projectLocation?: string;
+  projectYear?: string;
+  projectTags?: ProjectTag[] | null;
+  links?: PostLink[] | null;
+  author?: {
+    firstName: string;
+    lastName: string;
+    picture: any;
+  };
+}
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -85,6 +103,15 @@ export default async function PostPage(props: Props) {
     return notFound();
   }
 
+  // Helper function to check if an array has items
+  const hasItems = <T,>(arr: T[] | null | undefined): arr is T[] => {
+    return Array.isArray(arr) && arr.length > 0;
+  };
+
+  // Extract tags and links with proper type checking
+  const projectTags = post.projectTags as ProjectTag[] | null | undefined;
+  const links = post.links as PostLink[] | null | undefined;
+
   return (
     <>
       <Header />
@@ -114,13 +141,13 @@ export default async function PostPage(props: Props) {
               )}
 
               {/* Tags */}
-              {post.projectTags && post.projectTags.length > 0 && (
+              {hasItems(projectTags) && (
                 <div className="flex items-start gap-2">
                   <span className="font-mono text-gray-500 tracking-tighter whitespace-nowrap">
                     Tags
                   </span>
                   <div className="flex flex-wrap gap-2">
-                    {post.projectTags.map((tag: ProjectTag) => (
+                    {projectTags.map((tag: ProjectTag) => (
                       <DisplayTag key={tag._id} label="" value={tag.name} />
                     ))}
                   </div>
@@ -128,13 +155,13 @@ export default async function PostPage(props: Props) {
               )}
 
               {/* Links Section */}
-              {post.links && post.links.length > 0 && (
+              {hasItems(links) && (
                 <div className="flex flex-col gap-2">
                   <span className="font-mono text-gray-500 tracking-tighter">
                     Links
                   </span>
                   <div className="flex flex-col gap-1">
-                    {post.links.map((link: PostLink, index: number) => (
+                    {links.map((link: PostLink, index: number) => (
                       <div key={index} className="flex items-center gap-1">
                         <span className="text-gray-400">↳</span>
                         <a
