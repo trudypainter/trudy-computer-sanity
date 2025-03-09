@@ -39,7 +39,7 @@ export default async function Page() {
       </section>
 
       {/* section for landing sections + project archive */}
-      <div className="relative mt-[70vh] z-20 pt-16 bg-white border-t border-gray-200 rounded-3xl">
+      <div className="relative mt-[70vh] z-20 pt-24 bg-white border-t border-gray-200 rounded-3xl">
         <Header />
         <div className="container mx-auto px-4 my-12 hidden md:block max-w-content">
           <Suspense

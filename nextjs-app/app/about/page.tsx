@@ -17,7 +17,7 @@ export default async function AboutPage() {
   return (
     <>
       <Header />
-      <div className="container mx-auto px-4 pt-8 sm:py-32 max-w-content line-height-tight-custom">
+      <div className="container mx-auto px-4 pt-32 sm:py-32 max-w-content line-height-tight-custom">
         <div className="flex flex-col md:flex-row gap-12">
           {/* Left Column - Profile Picture */}
           <div className="w-1/2 md:w-1/3">

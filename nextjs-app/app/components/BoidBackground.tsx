@@ -2,52 +2,107 @@
 
 import { useEffect, useRef, useState } from "react";
 
-interface Boid {
+interface Metaball {
   x: number;
   y: number;
   vx: number;
   vy: number;
-  size: number;
-  rotation: number;
+  radius: number;
+  targetX: number;
+  targetY: number;
+  speed: number; // Individual speed factor
+  wanderAngle: number; // For autonomous wandering
+  phaseOffset: number; // Individual phase offset for movement
 }
 
 export default function BoidBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const boidsRef = useRef<Boid[]>([]);
+  const metaballsRef = useRef<Metaball[]>([]);
   const animationFrameRef = useRef<number>(0);
 
-  // Initialize boids
+  // Initialize metaballs
   useEffect(() => {
-    const initBoids = () => {
+    const initMetaballs = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const boids: Boid[] = [];
-      const numBoids = 45; // Increased number of boids
+      // Create offscreen canvas for performance
+      const offscreenCanvas = document.createElement("canvas");
+      offscreenCanvas.width = canvas.width;
+      offscreenCanvas.height = canvas.height;
+      offscreenCanvasRef.current = offscreenCanvas;
 
-      for (let i = 0; i < numBoids; i++) {
-        boids.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3, // Slower initial velocity
-          vy: (Math.random() - 0.5) * 0.3,
-          size: 8 + Math.random() * 14, // Slightly larger size range
-          rotation: Math.random() * Math.PI * 2,
+      const metaballs: Metaball[] = [];
+      const numMetaballs = 25; // Increased number of metaballs for better coverage
+
+      // Determine if we're on a mobile device or small screen
+      const isMobile = window.innerWidth < 768;
+      const isSmallScreen = window.innerWidth < 1024;
+
+      // Adjust grid and sizes based on screen size
+      const gridCols = isMobile ? 4 : 5;
+      const gridRows = isMobile ? 4 : 5;
+      const actualMetaballs = isMobile ? 16 : 25; // 4x4 grid for mobile
+
+      // Calculate base radius based on screen size
+      // Smaller radius on mobile devices
+      const baseRadius = isMobile
+        ? 40 + Math.min(window.innerWidth, window.innerHeight) * 0.05
+        : isSmallScreen
+          ? 60 + Math.min(window.innerWidth, window.innerHeight) * 0.06
+          : 80 + Math.min(window.innerWidth, window.innerHeight) * 0.07;
+
+      // Spread metaballs across the entire screen
+      for (let i = 0; i < actualMetaballs; i++) {
+        // Place metaballs in a grid-like pattern across the entire screen
+        const col = i % gridCols;
+        const row = Math.floor(i / gridCols);
+
+        // Add some randomness to the grid positions
+        const baseX = (col + 0.5) * (canvas.width / gridCols);
+        const baseY = (row + 0.5) * (canvas.height / gridRows);
+        const x =
+          baseX + (Math.random() - 0.5) * ((canvas.width / gridCols) * 0.8);
+        const y =
+          baseY + (Math.random() - 0.5) * ((canvas.height / gridRows) * 0.8);
+
+        // Randomize radius but keep it proportional to screen size
+        const radiusVariation = isMobile ? 30 : 60;
+
+        metaballs.push({
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 0.2, // Slower initial velocity
+          vy: (Math.random() - 0.5) * 0.2,
+          radius: baseRadius + Math.random() * radiusVariation, // Responsive size
+          targetX: x, // Initial target is the starting position
+          targetY: y,
+          speed: 0.2 + Math.random() * 0.3, // Individual speed factor
+          wanderAngle: Math.random() * Math.PI * 2, // Random initial wander angle
+          phaseOffset: Math.random() * Math.PI * 2, // Random phase offset
         });
       }
 
-      boidsRef.current = boids;
+      metaballsRef.current = metaballs;
     };
 
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
+      // Set canvas to full window size
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      initBoids();
+      // Resize offscreen canvas if it exists
+      if (offscreenCanvasRef.current) {
+        offscreenCanvasRef.current.width = canvas.width;
+        offscreenCanvasRef.current.height = canvas.height;
+      }
+
+      initMetaballs();
     };
 
     window.addEventListener("resize", handleResize);
@@ -63,111 +118,213 @@ export default function BoidBackground() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+
+      // Update metaballs to be repelled by mouse
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      // Adjust repulsion radius based on screen size
+      const isMobile = window.innerWidth < 768;
+      const repulsionRadius = isMobile ? 200 : 300;
+
+      // Repel metaballs from mouse position
+      metaballsRef.current.forEach((metaball) => {
+        const distanceFromMouse = Math.sqrt(
+          Math.pow(metaball.x - e.clientX, 2) +
+            Math.pow(metaball.y - e.clientY, 2)
+        );
+
+        // Only repel if mouse is close enough
+        if (distanceFromMouse < repulsionRadius) {
+          // Stronger repulsion when closer
+          const repulsionStrength =
+            0.8 * (1 - distanceFromMouse / repulsionRadius);
+
+          // Calculate angle away from mouse
+          const angleFromMouse = Math.atan2(
+            metaball.y - e.clientY,
+            metaball.x - e.clientX
+          );
+
+          // Apply repulsion force
+          metaball.vx += Math.cos(angleFromMouse) * repulsionStrength;
+          metaball.vy += Math.sin(angleFromMouse) * repulsionStrength;
+        }
+      });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
+    // Initial mouse position in center if not moved yet
+    if (mousePosition.x === 0 && mousePosition.y === 0) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        setMousePosition({ x: canvas.width / 2, y: canvas.height / 2 });
+      }
+    }
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, []);
+  }, [mousePosition]);
 
   // Animation loop
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const offscreenCanvas = offscreenCanvasRef.current;
+    if (!canvas || !offscreenCanvas) return;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const offCtx = offscreenCanvas.getContext("2d");
+    if (!ctx || !offCtx) return;
 
     const animate = () => {
+      // Clear both canvases
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      offCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
-      // Update and draw boids
-      boidsRef.current.forEach((boid) => {
-        // Apply subtle attraction to mouse position
-        const dx = mousePosition.x - boid.x;
-        const dy = mousePosition.y - boid.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+      // Setup offscreen canvas for threshold drawing
+      offCtx.fillStyle = "black";
+      offCtx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      offCtx.globalCompositeOperation = "lighter";
 
-        if (distance > 5) {
-          // Avoid jittering when very close
-          const attractionStrength = 0.0003; // Even more subtle attraction
-          boid.vx += (dx / distance) * attractionStrength;
-          boid.vy += (dy / distance) * attractionStrength;
+      // Get current time for autonomous movement
+      const currentTime = performance.now() * 0.001;
+
+      // Determine if we're on a mobile device
+      const isMobile = window.innerWidth < 768;
+
+      // Update and draw metaballs
+      metaballsRef.current.forEach((metaball, index) => {
+        // Get the initial grid position (the home region)
+        const gridCols = isMobile ? 4 : 5;
+        const gridRows = isMobile ? 4 : 5;
+        const col = index % gridCols;
+        const row = Math.floor(index / gridCols);
+        const homeX = (col + 0.5) * (canvas.width / gridCols);
+        const homeY = (row + 0.5) * (canvas.height / gridRows);
+        const homeRadius =
+          Math.min(canvas.width, canvas.height) /
+          (gridCols * (isMobile ? 1.2 : 1.5));
+
+        // Autonomous wandering behavior
+        // Update wander angle with Perlin-like noise
+        // Slower movement on mobile for better performance
+        const wanderSpeed = isMobile ? 0.3 : 0.5;
+        metaball.wanderAngle +=
+          Math.sin(currentTime * wanderSpeed + metaball.phaseOffset) * 0.1;
+
+        // Calculate wander force - adjusted for mobile
+        const wanderForceX =
+          Math.cos(metaball.wanderAngle) * 0.03 * metaball.speed;
+        const wanderForceY =
+          Math.sin(metaball.wanderAngle) * 0.03 * metaball.speed;
+
+        // Apply wander force
+        metaball.vx += wanderForceX;
+        metaball.vy += wanderForceY;
+
+        // Calculate distance from home region center
+        const distFromHome = Math.sqrt(
+          Math.pow(metaball.x - homeX, 2) + Math.pow(metaball.y - homeY, 2)
+        );
+
+        // Apply soft boundary force to keep within home region
+        if (distFromHome > homeRadius * 0.8) {
+          // Calculate angle back to home
+          const angleToHome = Math.atan2(
+            homeY - metaball.y,
+            homeX - metaball.x
+          );
+
+          // Stronger return force when further from home
+          const returnStrength = 0.01 * Math.pow(distFromHome / homeRadius, 2);
+
+          // Apply return force
+          metaball.vx += Math.cos(angleToHome) * returnStrength;
+          metaball.vy += Math.sin(angleToHome) * returnStrength;
         }
 
-        // Apply some random movement
-        boid.vx += (Math.random() - 0.5) * 0.018; // Slightly reduced randomness
-        boid.vy += (Math.random() - 0.5) * 0.018;
+        // Add very subtle randomness
+        metaball.vx += (Math.random() - 0.5) * 0.01;
+        metaball.vy += (Math.random() - 0.5) * 0.01;
 
-        // Limit velocity
-        const maxSpeed = 0.6; // Slower max speed for more gentle movement
-        const speed = Math.sqrt(boid.vx * boid.vx + boid.vy * boid.vy);
-        if (speed > maxSpeed) {
-          boid.vx = (boid.vx / speed) * maxSpeed;
-          boid.vy = (boid.vy / speed) * maxSpeed;
-        }
+        // Dampen velocity
+        metaball.vx *= 0.97;
+        metaball.vy *= 0.97;
 
         // Update position
-        boid.x += boid.vx;
-        boid.y += boid.vy;
+        metaball.x += metaball.vx;
+        metaball.y += metaball.vy;
 
-        // Update rotation to face direction of movement
-        boid.rotation = Math.atan2(boid.vy, boid.vx);
-
-        // Wrap around edges
-        if (boid.x < 0) boid.x = canvas.width;
-        if (boid.x > canvas.width) boid.x = 0;
-        if (boid.y < 0) boid.y = canvas.height;
-        if (boid.y > canvas.height) boid.y = 0;
-
-        // Draw rounded triangle
-        ctx.save();
-        ctx.translate(boid.x, boid.y);
-        ctx.rotate(boid.rotation);
-
-        // Set fill color slightly darker than bg-gray-500
-        ctx.fillStyle = "rgba(55, 65, 81, 0.35)"; // Darker than gray-500 with transparency
-
-        // Draw nicer rounded triangle
-        const size = boid.size;
-        ctx.beginPath();
-
-        // Front point
-        ctx.moveTo(size, 0);
-
-        // Right side with rounded corner
-        ctx.lineTo(size * 0.3, size * 0.5);
-        ctx.quadraticCurveTo(-size * 0.2, size * 0.7, -size * 0.7, size * 0.3);
-
-        // Back with rounded corner
-        ctx.quadraticCurveTo(-size * 0.9, 0, -size * 0.7, -size * 0.3);
-
-        // Left side with rounded corner
-        ctx.quadraticCurveTo(-size * 0.2, -size * 0.7, size * 0.3, -size * 0.5);
-
-        // Close the path
-        ctx.closePath();
-        ctx.fill();
-
-        // Add a subtle gradient/highlight
-        const gradient = ctx.createRadialGradient(
-          size * 0.3,
-          -size * 0.2,
+        // Draw metaballs to offscreen canvas with gradients for the metaball effect
+        const gradient = offCtx.createRadialGradient(
+          metaball.x,
+          metaball.y,
           0,
-          size * 0.3,
-          -size * 0.2,
-          size * 1.2
+          metaball.x,
+          metaball.y,
+          metaball.radius
         );
-        gradient.addColorStop(0, "rgba(107, 114, 128, 0.3)"); // Lighter highlight
-        gradient.addColorStop(1, "rgba(55, 65, 81, 0)"); // Fade to transparent
 
-        ctx.fillStyle = gradient;
-        ctx.fill();
+        gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+        gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.5)");
+        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
 
-        ctx.restore();
+        offCtx.fillStyle = gradient;
+        offCtx.beginPath();
+        offCtx.arc(metaball.x, metaball.y, metaball.radius, 0, Math.PI * 2);
+        offCtx.fill();
       });
+
+      // Apply threshold filter by getting image data
+      const imageData = offCtx.getImageData(
+        0,
+        0,
+        offscreenCanvas.width,
+        offscreenCanvas.height
+      );
+      const data = imageData.data;
+
+      // Create the final image with metaball color
+      ctx.fillStyle = "rgb(55, 65, 81)"; // gray-600
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Create a colored metaball effect
+      const finalImageData = ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      const finalData = finalImageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        // Calculate brightness from offscreen canvas
+        const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+
+        // Apply threshold and coloring to main canvas with more subtle effect
+        if (brightness > 50) {
+          // Lower threshold for more coverage
+          // Inside the metaball - a lighter gray
+          finalData[i] = 75; // R - slightly lighter
+          finalData[i + 1] = 85; // G - gray
+          finalData[i + 2] = 99; // B - 500
+          finalData[i + 3] = 230; // Slightly transparent for subtle effect
+        } else if (brightness > 10) {
+          // Lower outer threshold too
+          // Outer edge of metaball - darker
+          const alpha = brightness / 10;
+          finalData[i] = 55; // R - darker
+          finalData[i + 1] = 65; // G - gray
+          finalData[i + 2] = 81; // B - 600
+          finalData[i + 3] = Math.min(200, 80 + alpha * 120); // More transparent edges
+        }
+        // Everything else remains the background color
+      }
+
+      // Put the modified data back
+      ctx.putImageData(finalImageData, 0, 0);
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -177,7 +334,7 @@ export default function BoidBackground() {
     return () => {
       cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [mousePosition]);
+  }, []);
 
   return (
     <canvas

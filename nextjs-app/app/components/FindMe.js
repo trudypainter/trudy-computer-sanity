@@ -22,7 +22,7 @@ export default function FindMe() {
   }, []);
 
   const linkStyle = {
-    color: "black",
+    color: "#4b5563", // gray-600 in Tailwind
     textDecoration: "none",
     cursor: "pointer",
     position: "absolute",
