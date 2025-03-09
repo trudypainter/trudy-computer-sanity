@@ -6,20 +6,22 @@ import WeatherHub from "@/app/components/WeatherHub";
 import { LandingSections } from "@/app/components/LandingSections";
 import { ProjectArchiveSection } from "@/app/components/ProjectArchiveSection";
 import Header from "@/app/components/Header";
-import { BoidsBackdrop } from "@/app/components/BoidsBackdrop";
 import { CustomFooter } from "@/app/components/CustomFooter";
+import BoidBackground from "@/app/components/BoidBackground";
 
 export default async function Page() {
   return (
     <>
       {/* section for hero */}
-      <section className="fixed z-10 h-[100vh] top-0 left-0 w-full bg-blue-800/80">
-        <BoidsBackdrop />
-        <div className="container relative z-20 mx-auto px-4 h-[70vh] flex items-center">
+      <section className="fixed z-10 h-[100vh] top-0 left-0 w-full bg-gray-500">
+        {/* Boid Background */}
+        <BoidBackground />
+
+        <div className="container relative z-20 mx-auto px-4 h-[70vh] flex items-center max-w-content">
           <div className="w-full flex flex-col md:flex-row gap-8">
             <Suspense
               fallback={
-                <div className="w-full md:w-1/3 bg-blue-800/50 animate-pulse h-96" />
+                <div className="w-full md:w-1/3 bg-gray-400/50 animate-pulse h-96" />
               }
             >
               <div className="w-full bg-transparent p-0 rounded-lg">
@@ -37,9 +39,9 @@ export default async function Page() {
       </section>
 
       {/* section for landing sections + project archive */}
-      <div className="relative mt-[70vh] z-20 bg-white border-t border-gray-200 rounded-3xl">
+      <div className="relative mt-[70vh] z-20 pt-16 bg-white border-t border-gray-200 rounded-3xl">
         <Header />
-        <div className="container mx-auto px-4 my-12 hidden md:block">
+        <div className="container mx-auto px-4 my-12 hidden md:block max-w-content">
           <Suspense
             fallback={<div className="animate-pulse bg-gray-100 h-96" />}
           >
@@ -47,7 +49,7 @@ export default async function Page() {
           </Suspense>
         </div>
 
-        <div className="container mx-auto px-4 pb-24">
+        <div className="container mx-auto px-4 pb-24 max-w-content">
           <Suspense
             fallback={<div className="animate-pulse bg-gray-100 h-96" />}
           >
@@ -56,7 +58,7 @@ export default async function Page() {
         </div>
       </div>
 
-      {/* Footer section outside the white card but above boids */}
+      {/* Footer section */}
       <div className="relative z-20 pb-0">
         <CustomFooter />
       </div>

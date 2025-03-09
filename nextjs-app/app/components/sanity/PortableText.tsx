@@ -13,11 +13,17 @@ import {
   type PortableTextComponents,
   type PortableTextBlock,
 } from "next-sanity";
+import { client } from "@/sanity/lib/client";
 
-import ResolvedLink from "@/app/components/ResolvedLink";
-import TwitterEmbed from "@/app/components/TwitterEmbed";
-import VimeoEmbed from "@/app/components/VimeoEmbed";
-import SanityImage from "@/app/components/SanityImage";
+import ResolvedLink from "@/app/components/sanity/ResolvedLink";
+import TwitterEmbed from "@/app/components/sanity/TwitterEmbed";
+import VimeoEmbed from "@/app/components/sanity/VimeoEmbed";
+import YouTubeEmbed from "@/app/components/sanity/YouTubeEmbed";
+import LoomEmbed from "@/app/components/sanity/LoomEmbed";
+import InstagramEmbed from "@/app/components/sanity/InstagramEmbed";
+import IframeEmbed from "@/app/components/sanity/IframeEmbed";
+import SanityImage from "@/app/components/sanity/SanityImage";
+import Callout from "@/app/components/sanity/Callout";
 
 export default function CustomPortableText({
   className,
@@ -90,12 +96,52 @@ export default function CustomPortableText({
       image: ({ value }) => <SanityImage value={value} />,
       twitterEmbed: ({ value }) => <TwitterEmbed value={value} />,
       vimeoEmbed: ({ value }) => <VimeoEmbed value={value} />,
+      youtubeEmbed: ({ value }) => <YouTubeEmbed value={value} />,
+      loomEmbed: ({ value }) => <LoomEmbed url={value.url} />,
+      instagramEmbed: ({ value }) => <InstagramEmbed url={value.url} />,
+      iframeEmbed: ({ value }) => (
+        <IframeEmbed
+          url={value.url}
+          isCollapsed={value.isCollapsed}
+          zoom={value.zoom}
+          aspectRatio={value.aspectRatio}
+        />
+      ),
+      callout: ({ value }) => <Callout value={value} />,
+      divider: () => <hr className="my-8 border-0 border-b border-gray-200" />,
+      video: ({ value }) => {
+        const videoUrl = client.config().projectId
+          ? `https://cdn.sanity.io/files/${client.config().projectId}/${client.config().dataset}/${value.asset._ref
+              .replace("file-", "")
+              .replace("-mp4", ".mp4")
+              .replace("-mov", ".mov")
+              .replace("-webm", ".webm")}`
+          : "";
+
+        return (
+          <div className="my-4">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full rounded-lg"
+              src={videoUrl}
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        );
+      },
     },
   };
 
   return (
     <div
-      className={["prose prose-a:text-red-500", className]
+      className={[
+        "prose prose-a:font-normal prose-a:underline prose-a:decoration-1 hover:prose-a:decoration-2",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >

@@ -53,41 +53,48 @@ export function ProjectArchive({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Filter projects based on selected filters
-  const filteredProjects = projects.filter((project) => {
-    // If no filters are selected, show all projects
-    if (
-      selectedLocation.length === 0 &&
-      selectedYears.length === 0 &&
-      selectedTags.length === 0
-    ) {
-      return true;
-    }
+  const filteredProjects = projects
+    .filter((project) => {
+      // If no filters are selected, show all projects
+      if (
+        selectedLocation.length === 0 &&
+        selectedYears.length === 0 &&
+        selectedTags.length === 0
+      ) {
+        return true;
+      }
 
-    // Check if project matches any of the selected locations
-    const locationMatch =
-      selectedLocation.length === 0 ||
-      (project.location && selectedLocation.includes(project.location));
+      // Check if project matches any of the selected locations
+      const locationMatch =
+        selectedLocation.length === 0 ||
+        (project.location && selectedLocation.includes(project.location));
 
-    // Check if project matches any of the selected years
-    const yearMatch =
-      selectedYears.length === 0 ||
-      (project.year && selectedYears.includes(project.year));
+      // Check if project matches any of the selected years
+      const yearMatch =
+        selectedYears.length === 0 ||
+        (project.year && selectedYears.includes(project.year));
 
-    // Check if project matches any of the selected tags
-    const tagMatch =
-      selectedTags.length === 0 ||
-      (project.projectTags &&
-        project.projectTags.some((projectTag) =>
-          selectedTags.includes(projectTag._id)
-        ));
+      // Check if project matches any of the selected tags
+      const tagMatch =
+        selectedTags.length === 0 ||
+        (project.projectTags &&
+          project.projectTags.some((projectTag) =>
+            selectedTags.includes(projectTag._id)
+          ));
 
-    // Show project if it matches ANY of the selected filters
-    return (
-      (selectedLocation.length > 0 && locationMatch) ||
-      (selectedYears.length > 0 && yearMatch) ||
-      (selectedTags.length > 0 && tagMatch)
-    );
-  });
+      // Show project if it matches ANY of the selected filters
+      return (
+        (selectedLocation.length > 0 && locationMatch) ||
+        (selectedYears.length > 0 && yearMatch) ||
+        (selectedTags.length > 0 && tagMatch)
+      );
+    })
+    // Sort projects by year in descending order
+    .sort((a, b) => {
+      const yearA = a.year ? parseInt(a.year) : 0;
+      const yearB = b.year ? parseInt(b.year) : 0;
+      return yearB - yearA;
+    });
 
   return (
     <div className="flex flex-col md:flex-row gap-8">

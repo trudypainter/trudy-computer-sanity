@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import SanityImage from "./SanityImage";
+import ObjectCoverSanityImage from "@/app/components/sanity/ObjectCoverSanityImage";
 
 type ArchivePostType = {
   _id: string;
@@ -42,21 +42,17 @@ export const ArchivePost = ({ post }: { post: ArchivePostType }) => {
     <Link href={`/posts/${slug}`}>
       <article className="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition-colors">
         <div className="flex flex-row gap-3 p-4">
-          <div className="w-32">
-            <SanityImage
+          <div className="w-32 h-24 relative rounded-lg overflow-hidden">
+            <ObjectCoverSanityImage
               value={{
-                asset: post.coverImage.asset,
-                alt: post.coverImage.alt ?? undefined,
+                asset: coverImage.asset,
+                alt: coverImage.alt ?? undefined,
               }}
-              aspectRatio="4/3"
-              objectFit="cover"
-              background="#f3f4f6"
-              borderRadius="0.5rem"
             />
           </div>
           <div className="flex-1 flex flex-col justify-between gap-2">
-            <div className="space-y-2">
-              <h3 className="text-base font-medium text-gray-800">{title}</h3>
+            <div className="space-y-0">
+              <h3 className="text-base text-gray-800">{title}</h3>
               {excerpt && (
                 <p className="text-sm text-gray-600 line-clamp-2">{excerpt}</p>
               )}

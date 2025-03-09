@@ -1,6 +1,6 @@
 "use client";
 
-import SanityImage from "./SanityImage";
+import ObjectCoverSanityImage from "@/app/components/sanity/ObjectCoverSanityImage";
 
 type FeaturedPostType = {
   _id: string;
@@ -24,22 +24,21 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
   const { title, slug, excerpt, coverImage } = post;
 
   return (
-    <article className="bg-gray-100 rounded-lg overflow-hidden hover:bg-gray-200 transition-colors">
-      <a href={`/posts/${slug}`}>
-        <div className="p-4">
-          <div className="w-full">
-            <SanityImage
-              value={coverImage}
-              aspectRatio="4/3"
-              objectFit="cover"
-              background="#f3f4f6"
-              borderRadius="0.5rem"
+    <article className="bg-gray-100 rounded-lg overflow-hidden hover:bg-gray-200 transition-colors h-full">
+      <a href={`/posts/${slug}`} className="h-full">
+        <div className="p-4 flex flex-col h-full">
+          <div className="w-full aspect-[16/9] relative rounded-lg overflow-hidden">
+            <ObjectCoverSanityImage
+              value={{
+                asset: coverImage.asset,
+                alt: coverImage.alt,
+              }}
             />
           </div>
-          <div className="mt-4">
-            <h3 className="text-base font-medium text-gray-800">{title}</h3>
+          <div className="mt-4 flex-1 flex flex-col">
+            <p className="text-base font-base text-gray-800 mb-0">{title}</p>
             {excerpt && (
-              <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+              <p className="mt-0 text-sm text-gray-600 line-clamp-2">
                 {excerpt}
               </p>
             )}

@@ -11,6 +11,7 @@ import {location} from './documents/location'
 import {landingSection} from './documents/landingSection'
 import {about} from './singletons/about'
 import {headerBioBits} from './documents/headerBioBits'
+import callout from './objects/callout'
 
 // Export an array of all the schema types.  This is used in the Sanity Studio configuration. https://www.sanity.io/docs/schema-types
 
@@ -28,6 +29,7 @@ export const schemaTypes = [
   infoSection,
   link,
   postLink,
+  callout,
   // Singleton types
   settings,
   about,

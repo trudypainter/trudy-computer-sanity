@@ -1,9 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Footer from "./components/Footer";
-import { BoidsProvider } from "./components/BoidsContext";
-import { headers } from "next/headers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,7 +9,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Trudy Painter",
-  description: "Design-oriented AI software engineer",
+  description: "Trudy Painter's personal website",
 };
 
 export default function RootLayout({
@@ -20,19 +17,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Get the current pathname
-  const headersList = headers();
-  const pathname = headersList.get("x-pathname") || "/";
-  const isRootPath = pathname === "/";
-
   return (
     <html lang="en" className={inter.className}>
-      <body className="min-h-screen bg-white">
-        <BoidsProvider>
-          <main>{children}</main>
-        </BoidsProvider>
-        {!isRootPath && <Footer />}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

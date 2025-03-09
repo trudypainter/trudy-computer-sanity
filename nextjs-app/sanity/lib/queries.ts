@@ -74,15 +74,37 @@ export const morePostsQuery = defineQuery(`
 `);
 
 export const postQuery = defineQuery(`
-  *[_type == "post" && slug.current == $slug] [0] {
+  *[_type == "post" && slug.current == $slug][0] {
     content[]{
-    ...,
-    markDefs[]{
       ...,
-      ${linkReference}
-    }
-  },
+      _type == "vimeoEmbed" => {
+        ...,
+        url,
+        caption
+      },
+      _type == "youtubeEmbed" => {
+        ...,
+        url,
+        caption
+      },
+      _type == "video" => {
+        ...,
+        asset,
+        caption
+      },
+      markDefs[]{
+        ...,
+        ${linkReference}
+      }
+    },
     ${postFields}
+    projectLocation,
+    projectYear,
+    "projectTags": projectTags[]->{ _id, name, slug },
+    "links": links[] {
+      displayText,
+      href
+    }
   }
 `);
 

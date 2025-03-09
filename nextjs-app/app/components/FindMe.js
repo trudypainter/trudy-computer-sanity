@@ -141,7 +141,7 @@ export default function FindMe() {
         LinkedIn
       </a>
 
-      <a
+      {/* <a
         style={{ ...linkStyle, bottom: "15%", right: "20%" }}
         target="blank"
         href="TrudyPainter_Resume.pdf"
@@ -149,7 +149,7 @@ export default function FindMe() {
         onMouseOut={(e) => (e.target.style.textDecoration = "none")}
       >
         Resume
-      </a>
+      </a> */}
 
       {/* <a
         style={{ ...linkStyle, bottom: "15%", right: "20%" }}

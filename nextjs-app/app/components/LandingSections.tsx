@@ -70,14 +70,14 @@ const landingSectionsQuery = `
 
 const widthToClass = {
   full: "w-full",
-  "2/3": "w-full md:w-2/3",
-  "1/2": "w-full md:w-1/2",
-  "1/3": "w-full md:w-1/3",
+  "2/3": "w-full md:w-[calc(66.666667%-1rem)]",
+  "1/2": "w-full md:w-[calc(50%-1rem)]",
+  "1/3": "w-full md:w-[calc(33.333333%-1rem)]",
 };
 
 const Section = ({ section }: { section: LandingSection }) => {
   return (
-    <div className="mb-16">
+    <div className="mb-16 max-w-content mx-auto">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3">
           <div className="sticky top-24 space-y-2">
@@ -90,9 +90,17 @@ const Section = ({ section }: { section: LandingSection }) => {
         <div className="w-full md:w-2/3">
           <div className="space-y-8">
             {section.rows.map((row) => (
-              <div key={row._key} className="flex flex-wrap gap-8">
+              <div
+                key={row._key}
+                className={`flex flex-wrap md:flex-nowrap gap-8 ${
+                  row.posts.length === 1 ? "" : "md:justify-between"
+                }`}
+              >
                 {row.posts.map((post) => (
-                  <div key={post._key} className={widthToClass[post.width]}>
+                  <div
+                    key={post._key}
+                    className={`w-full ${widthToClass[post.width]}`}
+                  >
                     <FeaturedPost post={post.post} />
                   </div>
                 ))}

@@ -5,28 +5,29 @@ import { Suspense } from "react";
 import { format } from "date-fns";
 
 import Avatar from "@/app/components/Avatar";
-import CoverImage from "@/app/components/CoverImage";
+import CoverImage from "@/app/components/sanity/CoverImage";
 import DisplayTag from "@/app/components/DisplayTag";
 import { MorePosts } from "@/app/components/Posts";
-import PortableText from "@/app/components/PortableText";
+import PortableText from "@/app/components/sanity/PortableText";
 import { sanityFetch } from "@/sanity/lib/live";
 import { postPagesSlugs, postQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-type Tag = {
+type ProjectTag = {
+  _id: string;
   name: string;
   slug: string;
 };
 
 type PostLink = {
-  _key: string;
   displayText: string;
   href: string;
+};
+
+type Props = {
+  params: Promise<{ slug: string }>;
 };
 
 /**
@@ -87,12 +88,12 @@ export default async function PostPage(props: Props) {
   return (
     <>
       <Header />
-      <div className="container my-12 lg:my-24">
+      <div className="container mx-auto px-4 mt-24 mb-12 lg:mt-48 lg:mb-24 max-w-content">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 bg-gray-50 rounded-lg p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
             {/* Left Column - Title and Description */}
-            <div className="flex flex-col gap-6">
-              <h2 className="text-4xl font-bold font-mono tracking-tight text-gray-900 sm:text-5xl">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-2xl font-bold font-mono tracking-tight text-gray-900 sm:text-2xl">
                 {post.title}
               </h2>
               {post.excerpt && (
@@ -102,53 +103,45 @@ export default async function PostPage(props: Props) {
 
             {/* Right Column - Metadata */}
             <div className="flex flex-col gap-2 text-sm">
+              {/* Project Location */}
+              {post.projectLocation && (
+                <DisplayTag label="Location" value={post.projectLocation} />
+              )}
+
+              {/* Year */}
+              {post.projectYear && (
+                <DisplayTag label="Year" value={post.projectYear} />
+              )}
+
               {/* Tags */}
-              {/* {post.tags && post.tags.length > 0 && (
-                <div className="flex items-center gap-1">
-                  <span className="font-mono text-gray-500 tracking-tighter w-fit">
+              {post.projectTags && post.projectTags.length > 0 && (
+                <div className="flex items-start gap-2">
+                  <span className="font-mono text-gray-500 tracking-tighter whitespace-nowrap">
                     Tags
                   </span>
                   <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag: Tag) => (
-                      <span
-                        key={tag.slug}
-                        className="bg-gray-100 px-2 py-0.5 rounded-full"
-                      >
-                        {tag.name}
-                      </span>
+                    {post.projectTags.map((tag: ProjectTag) => (
+                      <DisplayTag key={tag._id} label="" value={tag.name} />
                     ))}
                   </div>
                 </div>
-              )} */}
-
-              {/* Year */}
-              {post.date && (
-                <DisplayTag
-                  label="Year"
-                  value={format(new Date(post.date), "yyyy")}
-                />
               )}
 
-              {/* Location */}
-              {/* {post.location && (
-                <DisplayTag label="Location" value={post.location.name} />
-              )} */}
-
               {/* Links Section */}
-              {/* {post.links && post.links.length > 0 && (
-                <div className="flex flex-col gap-0 border-gray-200">
+              {post.links && post.links.length > 0 && (
+                <div className="flex flex-col gap-2">
                   <span className="font-mono text-gray-500 tracking-tighter">
                     Links
                   </span>
-                  <div className="flex flex-col gap-0">
-                    {post.links.map((link: PostLink) => (
-                      <div key={link._key} className="flex items-center gap-1">
+                  <div className="flex flex-col gap-1">
+                    {post.links.map((link: PostLink, index: number) => (
+                      <div key={index} className="flex items-center gap-1">
                         <span className="text-gray-400">↳</span>
                         <a
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-gray-600 underline decoration-1 hover:decoration-2"
                         >
                           {link.displayText}
                         </a>
@@ -156,7 +149,7 @@ export default async function PostPage(props: Props) {
                     ))}
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
           </div>
 
@@ -175,15 +168,7 @@ export default async function PostPage(props: Props) {
         </div>
       </div>
 
-      {/* More Posts Section
-      <div className="border-t border-gray-100">
-        <div className="container my-12 lg:my-24">
-          <h2 className="text-2xl font-bold mb-8">More Posts</h2>
-          <aside className="grid gap-6">
-            <Suspense>{await MorePosts({ skip: post._id, limit: 2 })}</Suspense>
-          </aside>
-        </div> */}
-      {/* </div> */}
+      <Footer />
     </>
   );
 }

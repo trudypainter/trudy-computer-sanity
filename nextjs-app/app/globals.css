@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Callout component styles */
+.callout .prose,
+.callout .prose p,
+.callout .prose h1,
+.callout .prose h2,
+.callout .prose h3,
+.callout .prose h4,
+.callout .prose h5,
+.callout .prose h6,
+.callout .prose ul,
+.callout .prose ol,
+.callout .prose blockquote {
+  max-width: none !important;
+}

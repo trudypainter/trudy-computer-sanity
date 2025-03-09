@@ -1,13 +1,13 @@
 export default function Header() {
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 h-20 bg-transparent flex items-center">
-      <div className="container mx-auto px-4 h-full flex items-center">
+    <header className="absolute top-0 left-0 right-0 z-50 h-20 bg-transparent flex items-center">
+      <div className="container mx-auto px-4 h-full flex items-center max-w-content">
         <div className="flex items-center justify-between gap-5 w-full">
           <a
-            className="flex items-center gap-2 hover:opacity-75 transition-opacity"
+            className="flex items-center gap-2 hover:opacity-75 transition-opacity -translate-x-1"
             href="/"
           >
-            <span className="font-medium flex items-center">
+            <span className="font-base flex items-center">
               <span className="text-gray-500 text-xl leading-none align-middle mt-0.5">
                 ◼
               </span>

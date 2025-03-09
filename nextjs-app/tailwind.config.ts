@@ -9,6 +9,15 @@ export default {
       padding: "2rem",
     },
     extend: {
+      lineHeight: {
+        tight: "1.15",
+        snug: "1.5",
+        tighter: "1.1",
+        supertight: "1.05",
+      },
+      maxWidth: {
+        content: "920px",
+      },
       boxShadow: {
         layer: "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
       },
@@ -96,6 +105,17 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-inter)"],
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            lineHeight: 1.3,
+            p: {
+              marginTop: "1.5em",
+              marginBottom: "1.5em",
+            },
+          },
+        },
       },
     },
   },
