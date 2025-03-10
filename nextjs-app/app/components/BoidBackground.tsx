@@ -21,6 +21,8 @@ export default function BoidBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const metaballsRef = useRef<Metaball[]>([]);
   const animationFrameRef = useRef<number>(0);
+  const initializedRef = useRef<boolean>(false);
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize metaballs
   useEffect(() => {
@@ -33,6 +35,9 @@ export default function BoidBackground() {
       offscreenCanvas.width = canvas.width;
       offscreenCanvas.height = canvas.height;
       offscreenCanvasRef.current = offscreenCanvas;
+
+      // Only initialize metaballs if not already initialized
+      if (initializedRef.current) return;
 
       const metaballs: Metaball[] = [];
       const numMetaballs = 25; // Increased number of metaballs for better coverage
@@ -86,31 +91,76 @@ export default function BoidBackground() {
       }
 
       metaballsRef.current = metaballs;
+      initializedRef.current = true;
     };
 
     const handleResize = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      // Set canvas to full window size
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Resize offscreen canvas if it exists
-      if (offscreenCanvasRef.current) {
-        offscreenCanvasRef.current.width = canvas.width;
-        offscreenCanvasRef.current.height = canvas.height;
+      // Clear any existing timeout to debounce resize events
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
       }
 
-      initMetaballs();
+      // Debounce resize to prevent excessive recalculations
+      resizeTimeoutRef.current = setTimeout(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        // Store old dimensions for scaling
+        const oldWidth = canvas.width;
+        const oldHeight = canvas.height;
+
+        // Set canvas to full window size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Resize offscreen canvas if it exists
+        if (offscreenCanvasRef.current) {
+          offscreenCanvasRef.current.width = canvas.width;
+          offscreenCanvasRef.current.height = canvas.height;
+        }
+
+        // If metaballs are already initialized, adjust their positions proportionally
+        if (initializedRef.current && metaballsRef.current.length > 0) {
+          const widthRatio = canvas.width / oldWidth;
+          const heightRatio = canvas.height / oldHeight;
+
+          // Use the smaller ratio for radius scaling to maintain proportions
+          const sizeRatio = Math.min(widthRatio, heightRatio);
+
+          metaballsRef.current.forEach((metaball) => {
+            // Scale positions proportionally to new canvas size
+            metaball.x *= widthRatio;
+            metaball.y *= heightRatio;
+            metaball.targetX *= widthRatio;
+            metaball.targetY *= heightRatio;
+
+            // Scale radius proportionally
+            metaball.radius *= sizeRatio;
+          });
+        } else {
+          // First time initialization
+          initMetaballs();
+        }
+      }, 250); // 250ms debounce
     };
 
+    // Set initial canvas size and initialize metaballs
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initMetaballs();
+    }
+
+    // Add resize listener
     window.addEventListener("resize", handleResize);
-    handleResize();
 
     return () => {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameRef.current);
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -201,6 +251,8 @@ export default function BoidBackground() {
         const gridRows = isMobile ? 4 : 5;
         const col = index % gridCols;
         const row = Math.floor(index / gridCols);
+
+        // Calculate home position based on current canvas dimensions
         const homeX = (col + 0.5) * (canvas.width / gridCols);
         const homeY = (row + 0.5) * (canvas.height / gridRows);
         const homeRadius =

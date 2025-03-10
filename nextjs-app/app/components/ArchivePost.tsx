@@ -40,7 +40,36 @@ export const ArchivePost = ({ post }: { post: ArchivePostType }) => {
 
   return (
     <Link href={`/posts/${slug}`}>
-      <article className="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition-colors">
+      {/* Mobile Layout (Toast-like) */}
+      <article className="md:hidden bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition-colors">
+        <div className="p-4 pb-0">
+          <div className="aspect-[16/9] relative  rounded-lg overflow-hidden">
+            <ObjectCoverSanityImage
+              value={{
+                asset: coverImage.asset,
+                alt: coverImage.alt ?? undefined,
+              }}
+            />
+          </div>
+        </div>
+        <div className="p-4">
+          <h3 className="text-base text-gray-800">{title}</h3>
+          {excerpt && (
+            <p className="text-sm text-gray-600 mb-3 line-clamp-2">{excerpt}</p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {location && <ProjectTag text={location} />}
+            {year && <ProjectTag text={year} />}
+            {projectTags &&
+              projectTags.map((tag) => (
+                <ProjectTag key={tag._id} text={tag.name} />
+              ))}
+          </div>
+        </div>
+      </article>
+
+      {/* Desktop Layout (Original) */}
+      <article className="hidden md:block bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition-colors">
         <div className="flex flex-row gap-3 p-4">
           <div className="w-32 h-24 relative rounded-lg overflow-hidden">
             <ObjectCoverSanityImage

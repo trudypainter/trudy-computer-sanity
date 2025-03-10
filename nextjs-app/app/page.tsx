@@ -4,12 +4,32 @@ import Link from "next/link";
 import { BioBitsWrapper } from "@/app/components/BioBitsWrapper";
 import WeatherHub from "@/app/components/WeatherHub";
 import { LandingSections } from "@/app/components/LandingSections";
-import { ProjectArchiveSection } from "@/app/components/ProjectArchiveSection";
+import { ProjectArchive } from "@/app/components/ProjectArchive";
 import Header from "@/app/components/Header";
 import { CustomFooter } from "@/app/components/CustomFooter";
 import BoidBackground from "@/app/components/BoidBackground";
+import { sanityFetch } from "@/sanity/lib/live";
+import { projectArchiveQuery, getUniqueValues } from "@/sanity/lib/queries";
 
 export default async function Page() {
+  // Fetch project archive data
+  const { data } = await sanityFetch({ query: projectArchiveQuery });
+
+  // Prepare project archive data if it exists
+  let projectArchiveProps = null;
+  if (data && data.length > 0) {
+    const locations = getUniqueValues(data, "location");
+    const years = getUniqueValues(data, "year");
+    const tags = getUniqueValues(data, "projectTags");
+
+    projectArchiveProps = {
+      projects: data,
+      locations,
+      years,
+      tags,
+    };
+  }
+
   return (
     <>
       {/* section for hero */}
@@ -53,7 +73,7 @@ export default async function Page() {
           <Suspense
             fallback={<div className="animate-pulse bg-gray-100 h-96" />}
           >
-            <ProjectArchiveSection />
+            {projectArchiveProps && <ProjectArchive {...projectArchiveProps} />}
           </Suspense>
         </div>
       </div>
