@@ -11,9 +11,49 @@ import BoidBackground from "@/app/components/BoidBackground";
 import { sanityFetch } from "@/sanity/lib/live";
 import { projectArchiveQuery, getUniqueValues } from "@/sanity/lib/queries";
 
+// Query to get all projects from landing sections in order
+const landingSectionProjectsQuery = `
+  *[_type == "landingSection"] | order(order asc) {
+    _id,
+    "rows": rows[] {
+      _key,
+      "posts": posts[] {
+        _key,
+        "projectId": post->_id
+      }
+    }
+  }
+`;
+
 export default async function Page() {
   // Fetch project archive data
   const { data } = await sanityFetch({ query: projectArchiveQuery });
+
+  // Fetch landing section projects
+  const { data: landingSections } = await sanityFetch({
+    query: landingSectionProjectsQuery,
+  });
+
+  // Extract project IDs from landing sections in order
+  const landingSectionProjectIds: string[] = [];
+  if (landingSections && landingSections.length > 0) {
+    landingSections.forEach((section: any) => {
+      if (section.rows) {
+        section.rows.forEach((row: any) => {
+          if (row.posts) {
+            row.posts.forEach((post: any) => {
+              if (
+                post.projectId &&
+                !landingSectionProjectIds.includes(post.projectId)
+              ) {
+                landingSectionProjectIds.push(post.projectId);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
 
   // Prepare project archive data if it exists
   let projectArchiveProps = null;
@@ -27,6 +67,7 @@ export default async function Page() {
       locations,
       years,
       tags,
+      landingSectionProjectIds,
     };
   }
 

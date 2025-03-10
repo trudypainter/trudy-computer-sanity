@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArchivePost } from "./ArchivePost";
 import { FilterMenu } from "./FilterMenu";
 
@@ -40,6 +40,7 @@ type ProjectArchiveProps = {
     name: string;
     slug: string;
   }>;
+  landingSectionProjectIds?: string[]; // Optional array of project IDs in landing section order
 };
 
 export function ProjectArchive({
@@ -47,14 +48,34 @@ export function ProjectArchive({
   locations,
   years,
   tags,
+  landingSectionProjectIds = [],
 }: ProjectArchiveProps) {
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [orderedProjects, setOrderedProjects] = useState<Project[]>([]);
 
-  // Filter projects based on selected filters
-  const filteredProjects = projects
-    .filter((project) => {
+  // Detect mobile screens
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint in Tailwind
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Filter and order projects
+  useEffect(() => {
+    // First filter projects based on selected filters
+    let filtered = projects.filter((project) => {
       // If no filters are selected, show all projects
       if (
         selectedLocation.length === 0 &&
@@ -88,13 +109,55 @@ export function ProjectArchive({
         (selectedYears.length > 0 && yearMatch) ||
         (selectedTags.length > 0 && tagMatch)
       );
-    })
-    // Sort projects by year in descending order
-    .sort((a, b) => {
-      const yearA = a.year ? parseInt(a.year) : 0;
-      const yearB = b.year ? parseInt(b.year) : 0;
-      return yearB - yearA;
     });
+
+    // Then sort projects based on device type
+    if (isMobile && landingSectionProjectIds.length > 0) {
+      // On mobile, prioritize landing section order
+      const landingSectionProjects: Project[] = [];
+      const otherProjects: Project[] = [];
+
+      // First add projects in landing section order
+      landingSectionProjectIds.forEach((id) => {
+        const project = filtered.find((p) => p._id === id);
+        if (project) {
+          landingSectionProjects.push(project);
+        }
+      });
+
+      // Then add remaining projects sorted by year
+      filtered.forEach((project) => {
+        if (!landingSectionProjectIds.includes(project._id)) {
+          otherProjects.push(project);
+        }
+      });
+
+      // Sort other projects by year
+      otherProjects.sort((a, b) => {
+        const yearA = a.year ? parseInt(a.year) : 0;
+        const yearB = b.year ? parseInt(b.year) : 0;
+        return yearB - yearA;
+      });
+
+      setOrderedProjects([...landingSectionProjects, ...otherProjects]);
+    } else {
+      // On desktop, sort by year (default behavior)
+      filtered.sort((a, b) => {
+        const yearA = a.year ? parseInt(a.year) : 0;
+        const yearB = b.year ? parseInt(b.year) : 0;
+        return yearB - yearA;
+      });
+
+      setOrderedProjects(filtered);
+    }
+  }, [
+    projects,
+    selectedLocation,
+    selectedYears,
+    selectedTags,
+    isMobile,
+    landingSectionProjectIds,
+  ]);
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
@@ -120,7 +183,7 @@ export function ProjectArchive({
 
       <div className="w-full md:w-2/3">
         <div className="grid grid-cols-1 gap-4">
-          {filteredProjects.map((project) => (
+          {orderedProjects.map((project) => (
             <div key={project._id} className="w-full">
               <ArchivePost post={project} />
             </div>
