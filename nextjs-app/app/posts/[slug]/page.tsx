@@ -91,13 +91,20 @@ export async function generateMetadata(
       title,
       description,
       type: "article",
-      images: [], // Empty array to prevent any OG images
+      images: ["/favicon.ico"],
     },
     twitter: {
       card: "summary",
       title,
       description,
-      images: [], // Empty array to prevent any Twitter images
+      images: ["/favicon.ico"],
+    },
+    other: {
+      "apple-mobile-web-app-title": title,
+      "format-detection": "telephone=no",
+      "apple-mobile-web-app-status-bar-style": "default",
+      "apple-itunes-app": "none",
+      "apple-mobile-web-app-capable": "yes",
     },
   } satisfies Metadata;
 }
