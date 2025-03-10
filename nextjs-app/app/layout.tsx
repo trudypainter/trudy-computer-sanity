@@ -1,11 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
+import { customSans, customMono } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Trudy Painter",
@@ -18,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={`${customSans.variable} ${customMono.variable}`}>
       <body>{children}</body>
     </html>
   );

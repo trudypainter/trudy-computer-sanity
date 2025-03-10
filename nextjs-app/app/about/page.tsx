@@ -17,7 +17,7 @@ export default async function AboutPage() {
   return (
     <>
       <Header />
-      <div className="container mx-auto px-4 pt-32 sm:py-32 max-w-content line-height-tight-custom">
+      <div className="container mx-auto px-4 pt-32 sm:py-32 max-w-content">
         <div className="flex flex-col md:flex-row gap-12">
           {/* Left Column - Profile Picture */}
           <div className="w-1/2 md:w-1/3">
@@ -45,17 +45,30 @@ export default async function AboutPage() {
 
           {/* Right Column - Bio */}
           <div className="w-full md:w-2/3">
-            <div className="space-y-2 text-gray-600 tracking-tight prose prose-a:font-normal prose-a:text-gray-600 prose-a:underline prose-a:decoration-1 hover:prose-a:decoration-2 prose-p:tracking-tight prose-headings:tracking-tight leading-snug">
+            <div
+              className="text-gray-600 prose max-w-none 
+            prose-a:font-normal prose-a:text-gray-600 
+            prose-a:underline prose-a:decoration-1 hover:prose-a:decoration-2 prose-p:mb-3 prose-ul:-mt-2 prose-ul:mb-3 prose-li:my-0"
+            >
               <PortableText value={about.fullBio} />
 
-              <div className="h-2"></div>
-              <hr />
+              <hr className="my-8" />
+
               {about.bioSections.map((section: BioSection) => (
-                <div key={section.title} className="space-y-1">
-                  <h2 className="font-mono font-light text-sm text-gray-500 mt-12 tracking-tight mb-0">
+                <div key={section.title}>
+                  <h2
+                    className="font-mono font-normal text-sm
+                   text-gray-500 mt-8 tracking-tight mb-1"
+                  >
                     {section.title.toUpperCase()}
                   </h2>
-                  <PortableText value={section.content} />
+                  <div
+                    className="prose max-w-none 
+                  prose-p:mb-3 prose-ul:-mt-2 
+                  prose-ul:mb-3 prose-li:my-0"
+                  >
+                    <PortableText value={section.content} />
+                  </div>
                 </div>
               ))}
             </div>
