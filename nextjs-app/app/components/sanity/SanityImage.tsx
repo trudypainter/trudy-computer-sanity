@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { urlForImage } from "@/sanity/lib/image";
+import { LoaderCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface ImageProps {
   value: {
@@ -10,6 +12,9 @@ interface ImageProps {
     width?: "full" | "large" | "medium" | "small";
     asset: {
       _ref: string;
+      metadata?: {
+        lqip?: string;
+      };
     };
   };
 }
@@ -22,7 +27,19 @@ const widthMap = {
 };
 
 export default function SanityImage({ value }: ImageProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const imageUrl = urlForImage(value)?.url();
+  const blurDataURL = value.asset?.metadata?.lqip;
+
+  useEffect(() => {
+    if (isLoading && !blurDataURL) {
+      const timer = setTimeout(() => {
+        setShowLoader(true);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, blurDataURL]);
 
   if (!imageUrl) {
     return null;
@@ -33,6 +50,17 @@ export default function SanityImage({ value }: ImageProps) {
   return (
     <figure className="my-4 flex flex-col items-center">
       <div className={`${widthClass} relative`}>
+        {showLoader && isLoading && (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              zIndex: 10,
+            }}
+          >
+            <LoaderCircle className="h-8 w-8 animate-spin text-gray-600" />
+          </div>
+        )}
         <Image
           src={imageUrl}
           alt={value.alt || ""}
@@ -51,6 +79,12 @@ export default function SanityImage({ value }: ImageProps) {
                     : "100vw"
             }
           `}
+          onLoadingComplete={() => {
+            setIsLoading(false);
+            setShowLoader(false);
+          }}
+          placeholder={blurDataURL ? "blur" : "empty"}
+          blurDataURL={blurDataURL}
         />
       </div>
       {value.caption && (
