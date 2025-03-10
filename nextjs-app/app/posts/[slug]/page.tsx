@@ -74,21 +74,30 @@ export async function generateMetadata(
   const { data: post } = await sanityFetch({
     query: postQuery,
     params,
-    // Metadata should never contain stega
     stega: false,
   });
-  const previousImages = (await parent).openGraph?.images || [];
-  const ogImage = resolveOpenGraphImage(post?.coverImage);
+
+  const title = post?.title || "Post";
+  const description = post?.excerpt || undefined;
 
   return {
+    title,
+    description,
     authors:
       post?.author?.firstName && post?.author?.lastName
         ? [{ name: `${post.author.firstName} ${post.author.lastName}` }]
         : [],
-    title: post?.title,
-    description: post?.excerpt,
     openGraph: {
-      images: ogImage ? [ogImage, ...previousImages] : previousImages,
+      title,
+      description,
+      type: "article",
+      images: [], // Empty array to prevent any OG images
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      images: [], // Empty array to prevent any Twitter images
     },
   } satisfies Metadata;
 }
