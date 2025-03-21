@@ -134,11 +134,39 @@ export const aboutPageQuery = defineQuery(`
   }
 `);
 
+// The simplest possible query to get all posts - no conditions, no projections
+export const allPostsCountQuery = defineQuery(`
+  *[_type == "post"] {
+    _id,
+    _type,
+    title,
+    "isDraft": _id in path("drafts.**"),
+    _updatedAt
+  }
+`);
+
+// This query will show ALL post documents, regardless of their state or fields
+export const allDocumentsQuery = defineQuery(`
+  *[_type == "post"] {
+    _id,
+    title,
+    _createdAt,
+    _updatedAt,
+    "hasCoverImage": defined(coverImage),
+    "hasSlug": defined(slug.current),
+    "hasDate": defined(date),
+    "isPublished": !(_id in path("drafts.**")),
+    "inDrafts": _id in path("drafts.**")
+  }
+`);
+
+// Modified project archive query to provide more information
 export const projectArchiveQuery = defineQuery(`
   *[_type == "post"] | order(date desc) {
     _id,
     title,
     "slug": slug.current,
+    "hasSlug": defined(slug.current),
     excerpt,
     "coverImage": {
       "asset": coalesce(coverImage.asset, {"_ref": "", "_type": "reference"}),
@@ -147,15 +175,25 @@ export const projectArchiveQuery = defineQuery(`
       "alt": coverImage.alt,
       "_type": "image"
     },
+    "hasCoverImage": defined(coverImage),
     "date": coalesce(date, _updatedAt),
+    "hasDate": defined(date),
     "location": projectLocation,
     "year": projectYear,
-    "projectTags": projectTags[]->{ _id, name, slug }
+    "projectTags": projectTags[]->{ _id, name, slug },
+    "isPublished": !(_id in path("drafts.**")),
+    "inDrafts": _id in path("drafts.**"),
+    _createdAt,
+    _updatedAt
   }
 `);
 
 // Helper function to get unique values from an array of posts
 export function getUniqueValues(posts: any[], field: string) {
+  console.log(
+    `Getting unique values for field: ${field} from ${posts.length} posts`
+  );
+
   if (field === "projectTags") {
     // For tags, collect all unique tags across all posts
     const tagsMap = new Map();
@@ -168,6 +206,7 @@ export function getUniqueValues(posts: any[], field: string) {
         );
       }
     });
+    console.log(`Found ${tagsMap.size} unique tags`);
     return Array.from(tagsMap.values());
   }
 
@@ -179,7 +218,7 @@ export function getUniqueValues(posts: any[], field: string) {
     }
   });
 
-  return Array.from(values).sort((a, b) => {
+  const result = Array.from(values).sort((a, b) => {
     // Special sorting for years to be in reverse order (newest first)
     if (field === "year") {
       return parseInt(b) - parseInt(a);
@@ -187,6 +226,11 @@ export function getUniqueValues(posts: any[], field: string) {
     // For strings, use localeCompare
     return String(a).localeCompare(String(b));
   });
+
+  console.log(
+    `Found ${result.length} unique values for ${field}: ${result.join(", ")}`
+  );
+  return result;
 }
 
 export const headerBioBitsQuery = defineQuery(`

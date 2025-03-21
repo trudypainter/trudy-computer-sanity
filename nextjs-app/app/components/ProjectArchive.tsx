@@ -56,6 +56,21 @@ export function ProjectArchive({
   const [isMobile, setIsMobile] = useState(false);
   const [orderedProjects, setOrderedProjects] = useState<Project[]>([]);
 
+  // Log received props on mount
+  useEffect(() => {
+    console.log(`[ProjectArchive] Received ${projects.length} projects`);
+    console.log(
+      `[ProjectArchive] Project IDs:`,
+      projects.map((p) => p._id)
+    );
+    console.log(
+      `[ProjectArchive] ${locations.length} locations, ${years.length} years, ${tags.length} tags`
+    );
+    console.log(
+      `[ProjectArchive] ${landingSectionProjectIds.length} landing section project IDs`
+    );
+  }, [projects, locations, years, tags, landingSectionProjectIds]);
+
   // Detect mobile screens
   useEffect(() => {
     const checkMobile = () => {
@@ -111,6 +126,10 @@ export function ProjectArchive({
       );
     });
 
+    console.log(
+      `[ProjectArchive] After filtering: ${filtered.length} projects remain`
+    );
+
     // Then sort projects based on device type
     if (isMobile && landingSectionProjectIds.length > 0) {
       // On mobile, prioritize landing section order
@@ -139,6 +158,9 @@ export function ProjectArchive({
         return yearB - yearA;
       });
 
+      console.log(
+        `[ProjectArchive] Mobile ordering: ${landingSectionProjects.length} from landing, ${otherProjects.length} others`
+      );
       setOrderedProjects([...landingSectionProjects, ...otherProjects]);
     } else {
       // On desktop, sort by year (default behavior)
@@ -148,6 +170,9 @@ export function ProjectArchive({
         return yearB - yearA;
       });
 
+      console.log(
+        `[ProjectArchive] Desktop ordering: ${filtered.length} projects by year`
+      );
       setOrderedProjects(filtered);
     }
   }, [
@@ -158,6 +183,8 @@ export function ProjectArchive({
     isMobile,
     landingSectionProjectIds,
   ]);
+
+  console.log(`[ProjectArchive] Rendering ${orderedProjects.length} projects`);
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
