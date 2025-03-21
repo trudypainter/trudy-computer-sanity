@@ -8,34 +8,38 @@ import { headers } from "next/headers";
  * Be sure to update the `changeFrequency` and `priority` values to match your application's content.
  */
 
+type SitemapFrequency =
+  | "always"
+  | "hourly"
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "yearly"
+  | "never";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allPostsAndPages = await sanityFetch({
     query: sitemapData,
   });
   const headersList = await headers();
   const sitemap: MetadataRoute.Sitemap = [];
-  const domain: String = headersList.get("host") as string;
+  const domain: string = headersList.get("host") as string;
+
+  // Add homepage
   sitemap.push({
-    url: domain as string,
+    url: domain,
     lastModified: new Date(),
     priority: 1,
     changeFrequency: "monthly",
   });
 
-  if (allPostsAndPages != null && allPostsAndPages.data.length != 0) {
-    let priority: number;
-    let changeFrequency:
-      | "monthly"
-      | "always"
-      | "hourly"
-      | "daily"
-      | "weekly"
-      | "yearly"
-      | "never"
-      | undefined;
-    let url: string;
-
+  if (allPostsAndPages?.data?.length > 0) {
     for (const p of allPostsAndPages.data) {
+      let priority = 0.5; // default priority
+      let changeFrequency: SitemapFrequency = "monthly"; // default frequency
+      let url = domain; // default url
+
+      // Set values based on content type
       switch (p._type) {
         case "page":
           priority = 0.8;
@@ -47,12 +51,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           changeFrequency = "never";
           url = `${domain}/posts/${p.slug}`;
           break;
+        default:
+          continue; // Skip if not a recognized type
       }
+
       sitemap.push({
+        url,
         lastModified: p._updatedAt || new Date(),
         priority,
         changeFrequency,
-        url,
       });
     }
   }

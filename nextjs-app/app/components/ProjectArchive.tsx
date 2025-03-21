@@ -118,12 +118,8 @@ export function ProjectArchive({
             selectedTags.includes(projectTag._id)
           ));
 
-      // Show project if it matches ANY of the selected filters
-      return (
-        (selectedLocation.length > 0 && locationMatch) ||
-        (selectedYears.length > 0 && yearMatch) ||
-        (selectedTags.length > 0 && tagMatch)
-      );
+      // Show project if it matches ALL of the selected filters
+      return locationMatch && yearMatch && tagMatch;
     });
 
     console.log(

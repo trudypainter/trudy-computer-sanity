@@ -1,4 +1,14 @@
 import {defineArrayMember, defineType, defineField} from 'sanity'
+import {
+  PlayIcon,
+  VideoIcon,
+  ImageIcon,
+  DocumentIcon,
+  BlockquoteIcon,
+  LinkIcon,
+  EarthGlobeIcon,
+  ThListIcon,
+} from '@sanity/icons'
 
 /**
  * This is the schema definition for the rich text fields used for
@@ -25,6 +35,7 @@ export const blockContent = defineType({
             name: 'link',
             type: 'object',
             title: 'Link',
+            icon: LinkIcon,
             fields: [
               defineField({
                 name: 'linkType',
@@ -95,6 +106,7 @@ export const blockContent = defineType({
     // Image
     defineArrayMember({
       type: 'image',
+      icon: ImageIcon,
       options: {
         hotspot: true,
       },
@@ -139,6 +151,7 @@ export const blockContent = defineType({
       name: 'video',
       type: 'file',
       title: 'Video',
+      icon: VideoIcon,
       options: {
         accept: 'video/*',
       },
@@ -149,6 +162,28 @@ export const blockContent = defineType({
           title: 'Caption',
           description: 'Optional caption to display below the video',
         }),
+        defineField({
+          name: 'width',
+          type: 'number',
+          title: 'Width',
+          description: 'Set the width as a percentage (0.1 to 1.0, where 1.0 is full width)',
+          initialValue: 1.0,
+          validation: (Rule) => Rule.min(0.1).max(1).precision(1),
+        }),
+        defineField({
+          name: 'hasBorder',
+          type: 'boolean',
+          title: 'Add Border',
+          description: 'Add a light gray border around the video',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'showControls',
+          type: 'boolean',
+          title: 'Show Controls',
+          description: 'Display video playback controls (default is off)',
+          initialValue: false,
+        }),
       ],
     }),
     // Vimeo Embed
@@ -156,6 +191,7 @@ export const blockContent = defineType({
       name: 'vimeoEmbed',
       type: 'object',
       title: 'Vimeo Embed',
+      icon: PlayIcon,
       fields: [
         defineField({
           name: 'url',
@@ -170,6 +206,28 @@ export const blockContent = defineType({
           title: 'Caption',
           description: 'Optional caption to display below the video',
         }),
+        defineField({
+          name: 'width',
+          type: 'number',
+          title: 'Width',
+          description: 'Set the width as a percentage (0.1 to 1.0, where 1.0 is full width)',
+          initialValue: 1.0,
+          validation: (Rule) => Rule.min(0.1).max(1).precision(1),
+        }),
+        defineField({
+          name: 'hasBorder',
+          type: 'boolean',
+          title: 'Add Border',
+          description: 'Add a light gray border around the video',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'showControls',
+          type: 'boolean',
+          title: 'Show Controls',
+          description: 'Display video playback controls (default is off)',
+          initialValue: false,
+        }),
       ],
     }),
     // YouTube Embed
@@ -177,6 +235,7 @@ export const blockContent = defineType({
       name: 'youtubeEmbed',
       type: 'object',
       title: 'YouTube Embed',
+      icon: PlayIcon,
       fields: [
         defineField({
           name: 'url',
@@ -191,6 +250,28 @@ export const blockContent = defineType({
           title: 'Caption',
           description: 'Optional caption to display below the video',
         }),
+        defineField({
+          name: 'width',
+          type: 'number',
+          title: 'Width',
+          description: 'Set the width as a percentage (0.1 to 1.0, where 1.0 is full width)',
+          initialValue: 1.0,
+          validation: (Rule) => Rule.min(0.1).max(1).precision(1),
+        }),
+        defineField({
+          name: 'hasBorder',
+          type: 'boolean',
+          title: 'Add Border',
+          description: 'Add a light gray border around the video',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'showControls',
+          type: 'boolean',
+          title: 'Show Controls',
+          description: 'Display video playback controls (default is off)',
+          initialValue: false,
+        }),
       ],
     }),
     // Loom Embed
@@ -198,6 +279,7 @@ export const blockContent = defineType({
       name: 'loomEmbed',
       type: 'object',
       title: 'Loom Embed',
+      icon: PlayIcon,
       fields: [
         defineField({
           name: 'url',
@@ -212,6 +294,28 @@ export const blockContent = defineType({
           title: 'Caption',
           description: 'Optional caption to display below the video',
         }),
+        defineField({
+          name: 'width',
+          type: 'number',
+          title: 'Width',
+          description: 'Set the width as a percentage (0.1 to 1.0, where 1.0 is full width)',
+          initialValue: 1.0,
+          validation: (Rule) => Rule.min(0.1).max(1).precision(1),
+        }),
+        defineField({
+          name: 'hasBorder',
+          type: 'boolean',
+          title: 'Add Border',
+          description: 'Add a light gray border around the video',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'showControls',
+          type: 'boolean',
+          title: 'Show Controls',
+          description: 'Display video playback controls (default is off)',
+          initialValue: false,
+        }),
       ],
     }),
     // Instagram Embed
@@ -219,6 +323,7 @@ export const blockContent = defineType({
       name: 'instagramEmbed',
       type: 'object',
       title: 'Instagram Embed',
+      icon: DocumentIcon,
       fields: [
         defineField({
           name: 'url',
@@ -240,6 +345,7 @@ export const blockContent = defineType({
       name: 'twitterEmbed',
       type: 'object',
       title: 'Twitter/X Embed',
+      icon: DocumentIcon,
       fields: [
         defineField({
           name: 'url',
@@ -255,6 +361,7 @@ export const blockContent = defineType({
       name: 'divider',
       type: 'object',
       title: 'Divider',
+      icon: ThListIcon,
       fields: [
         defineField({
           name: 'style',
@@ -276,12 +383,14 @@ export const blockContent = defineType({
       name: 'callout',
       type: 'callout',
       title: 'Callout',
+      icon: BlockquoteIcon,
     }),
     // Iframe Embed
     defineArrayMember({
       name: 'iframeEmbed',
       type: 'object',
       title: 'Website Embed',
+      icon: EarthGlobeIcon,
       fields: [
         defineField({
           name: 'url',

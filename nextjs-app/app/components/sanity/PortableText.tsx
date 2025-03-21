@@ -99,7 +99,14 @@ export default function CustomPortableText({
       twitterEmbed: ({ value }) => <TwitterEmbed value={value} />,
       vimeoEmbed: ({ value }) => <VimeoEmbed value={value} />,
       youtubeEmbed: ({ value }) => <YouTubeEmbed value={value} />,
-      loomEmbed: ({ value }) => <LoomEmbed url={value.url} />,
+      loomEmbed: ({ value }) => (
+        <LoomEmbed
+          url={value.url}
+          width={value.width}
+          hasBorder={value.hasBorder}
+          showControls={value.showControls}
+        />
+      ),
       instagramEmbed: ({ value }) => <InstagramEmbed url={value.url} />,
       iframeEmbed: ({ value }) => (
         <IframeEmbed
@@ -120,18 +127,36 @@ export default function CustomPortableText({
               .replace("-webm", ".webm")}`
           : "";
 
+        // Use the width setting if provided, otherwise default to 100%
+        const widthStyle = value.width
+          ? { width: `${value.width * 100}%`, margin: "0 auto" }
+          : {};
+
+        // Define the border class based on hasBorder flag
+        const borderClass = value.hasBorder
+          ? "border border-gray-200 p-1 rounded-lg"
+          : "";
+
         return (
-          <div className="my-4">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full rounded-lg"
-              src={videoUrl}
-            >
-              Your browser does not support the video tag.
-            </video>
+          <div className="my-4" style={widthStyle}>
+            <div className={borderClass}>
+              <video
+                autoPlay
+                loop
+                muted={!value.showControls}
+                controls={value.showControls}
+                playsInline
+                className="w-full rounded-lg"
+                src={videoUrl}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            {value.caption && (
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                {value.caption}
+              </p>
+            )}
           </div>
         );
       },

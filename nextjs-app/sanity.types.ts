@@ -720,12 +720,35 @@ export type PagesSlugsResult = Array<{
 // Variable: aboutPageQuery
 // Query: *[_type == "about"][0]{    profileImage {      asset,      alt,    },    photographerName,    photographerUrl,    fullBio,    bioSections[] {      title,      content    }  }
 export type AboutPageQueryResult = null;
+// Variable: allPostsCountQuery
+// Query: *[_type == "post"] {    _id,    _type,    title,    "isDraft": _id in path("drafts.**"),    _updatedAt  }
+export type AllPostsCountQueryResult = Array<{
+  _id: string;
+  _type: "post";
+  title: string;
+  isDraft: boolean;
+  _updatedAt: string;
+}>;
+// Variable: allDocumentsQuery
+// Query: *[_type == "post"] {    _id,    title,    _createdAt,    _updatedAt,    "hasCoverImage": defined(coverImage),    "hasSlug": defined(slug.current),    "hasDate": defined(date),    "isPublished": !(_id in path("drafts.**")),    "inDrafts": _id in path("drafts.**")  }
+export type AllDocumentsQueryResult = Array<{
+  _id: string;
+  title: string;
+  _createdAt: string;
+  _updatedAt: string;
+  hasCoverImage: true;
+  hasSlug: true;
+  hasDate: false | true;
+  isPublished: boolean;
+  inDrafts: boolean;
+}>;
 // Variable: projectArchiveQuery
-// Query: *[_type == "post"] | order(date desc) {    _id,    title,    "slug": slug.current,    excerpt,    "coverImage": {      "asset": coalesce(coverImage.asset, {"_ref": "", "_type": "reference"}),      "hotspot": coverImage.hotspot,      "crop": coverImage.crop,      "alt": coverImage.alt,      "_type": "image"    },    "date": coalesce(date, _updatedAt),    "location": projectLocation,    "year": projectYear,    "projectTags": projectTags[]->{ _id, name, slug }  }
+// Query: *[_type == "post"] | order(date desc) {    _id,    title,    "slug": slug.current,    "hasSlug": defined(slug.current),    excerpt,    "coverImage": {      "asset": coalesce(coverImage.asset, {"_ref": "", "_type": "reference"}),      "hotspot": coverImage.hotspot,      "crop": coverImage.crop,      "alt": coverImage.alt,      "_type": "image"    },    "hasCoverImage": defined(coverImage),    "date": coalesce(date, _updatedAt),    "hasDate": defined(date),    "location": projectLocation,    "year": projectYear,    "projectTags": projectTags[]->{ _id, name, slug },    "isPublished": !(_id in path("drafts.**")),    "inDrafts": _id in path("drafts.**"),    _createdAt,    _updatedAt  }
 export type ProjectArchiveQueryResult = Array<{
   _id: string;
   title: string;
   slug: string;
+  hasSlug: true;
   excerpt: string | null;
   coverImage: {
     asset: {
@@ -742,10 +765,16 @@ export type ProjectArchiveQueryResult = Array<{
     alt: string | null;
     _type: "image";
   };
+  hasCoverImage: true;
   date: string;
+  hasDate: false | true;
   location: null;
   year: null;
   projectTags: null;
+  isPublished: boolean;
+  inDrafts: boolean;
+  _createdAt: string;
+  _updatedAt: string;
 }>;
 // Variable: headerBioBitsQuery
 // Query: *[_type == "headerBioBits"] | order(order asc) {    _id,    title,    content,    order  }
@@ -764,7 +793,9 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
     "\n  *[_type == \"about\"][0]{\n    profileImage {\n      asset,\n      alt,\n    },\n    photographerName,\n    photographerUrl,\n    fullBio,\n    bioSections[] {\n      title,\n      content\n    }\n  }\n": AboutPageQueryResult;
-    "\n  *[_type == \"post\"] | order(date desc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    excerpt,\n    \"coverImage\": {\n      \"asset\": coalesce(coverImage.asset, {\"_ref\": \"\", \"_type\": \"reference\"}),\n      \"hotspot\": coverImage.hotspot,\n      \"crop\": coverImage.crop,\n      \"alt\": coverImage.alt,\n      \"_type\": \"image\"\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"location\": projectLocation,\n    \"year\": projectYear,\n    \"projectTags\": projectTags[]->{ _id, name, slug }\n  }\n": ProjectArchiveQueryResult;
+    "\n  *[_type == \"post\"] {\n    _id,\n    _type,\n    title,\n    \"isDraft\": _id in path(\"drafts.**\"),\n    _updatedAt\n  }\n": AllPostsCountQueryResult;
+    "\n  *[_type == \"post\"] {\n    _id,\n    title,\n    _createdAt,\n    _updatedAt,\n    \"hasCoverImage\": defined(coverImage),\n    \"hasSlug\": defined(slug.current),\n    \"hasDate\": defined(date),\n    \"isPublished\": !(_id in path(\"drafts.**\")),\n    \"inDrafts\": _id in path(\"drafts.**\")\n  }\n": AllDocumentsQueryResult;
+    "\n  *[_type == \"post\"] | order(date desc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    \"hasSlug\": defined(slug.current),\n    excerpt,\n    \"coverImage\": {\n      \"asset\": coalesce(coverImage.asset, {\"_ref\": \"\", \"_type\": \"reference\"}),\n      \"hotspot\": coverImage.hotspot,\n      \"crop\": coverImage.crop,\n      \"alt\": coverImage.alt,\n      \"_type\": \"image\"\n    },\n    \"hasCoverImage\": defined(coverImage),\n    \"date\": coalesce(date, _updatedAt),\n    \"hasDate\": defined(date),\n    \"location\": projectLocation,\n    \"year\": projectYear,\n    \"projectTags\": projectTags[]->{ _id, name, slug },\n    \"isPublished\": !(_id in path(\"drafts.**\")),\n    \"inDrafts\": _id in path(\"drafts.**\"),\n    _createdAt,\n    _updatedAt\n  }\n": ProjectArchiveQueryResult;
     "\n  *[_type == \"headerBioBits\"] | order(order asc) {\n    _id,\n    title,\n    content,\n    order\n  }\n": HeaderBioBitsQueryResult;
   }
 }
