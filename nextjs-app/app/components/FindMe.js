@@ -4,6 +4,60 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function FindMe() {
+  // =============================================
+  // LINK CONFIGURATION - Easy to edit
+  // =============================================
+  const links = [
+    {
+      name: "Are.na",
+      url: "https://www.are.na/trudy-painter",
+      position: { top: "15%", left: "20%" },
+    },
+    {
+      name: "Spotify",
+      url: "https://open.spotify.com/user/trudypaintet?si=ZlW6diDKSl61x9oKhit5BA",
+      position: { bottom: "30%", left: "20%" },
+    },
+    {
+      name: "Github",
+      url: "https://github.com/trudypainter",
+      position: { top: "15%", right: "20%" },
+    },
+    {
+      name: "HF",
+      url: "https://huggingface.co/Trudy",
+      position: { top: "40%", right: "20%" },
+    },
+    {
+      name: "X/Twitter",
+      url: "https://x.com/trudypainter",
+      position: { top: "25%", right: "20%" },
+    },
+    {
+      name: "VSCO",
+      url: "https://vsco.co/bionicpinkytoe/gallery",
+      position: { top: "30%", left: "15%" },
+    },
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/in/trudy-painter/",
+      position: { bottom: "35%", right: "20%" },
+    },
+    // Commented out links still included in configuration for easy re-enabling
+    {
+      name: "Resume",
+      url: "TrudyPainter_Resume.pdf",
+      position: { bottom: "15%", right: "20%" },
+      disabled: true,
+    },
+    {
+      name: "Full CV",
+      url: "https://docs.google.com/spreadsheets/d/1pBokIjBV7lxDYNxqqxfLrNb7h3h4GuhWSbrrTGd9Fho/edit#gid=0",
+      position: { bottom: "15%", right: "20%" },
+      disabled: true,
+    },
+  ];
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -81,86 +135,23 @@ export default function FindMe() {
         />
       </svg>
 
-      <a
-        style={{ ...linkStyle, top: "15%", left: "20%" }}
-        target="blank"
-        href="https://www.are.na/trudy-painter"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        Are.na
-      </a>
+      {/* Render all links that aren't disabled */}
+      {links
+        .filter((link) => !link.disabled)
+        .map((link, index) => (
+          <a
+            key={index}
+            style={{ ...linkStyle, ...link.position }}
+            target="blank"
+            href={link.url}
+            onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
+            onMouseOut={(e) => (e.target.style.textDecoration = "none")}
+          >
+            {link.name}
+          </a>
+        ))}
 
-      <a
-        style={{ ...linkStyle, bottom: "30%", left: "20%" }}
-        target="blank"
-        href="https://open.spotify.com/user/trudypaintet?si=ZlW6diDKSl61x9oKhit5BA"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        Spotify
-      </a>
-
-      <a
-        style={{ ...linkStyle, top: "15%", right: "20%" }}
-        target="blank"
-        href="https://github.com/trudypainter"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        Github
-      </a>
-
-      <a
-        style={{ ...linkStyle, top: "35%", right: "20%" }}
-        target="blank"
-        href="https://x.com/trudypainter"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        X/Twitter
-      </a>
-
-      <a
-        style={{ ...linkStyle, top: "30%", left: "15%" }}
-        target="blank"
-        href="https://vsco.co/bionicpinkytoe/gallery"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        VSCO
-      </a>
-
-      <a
-        style={{ ...linkStyle, bottom: "35%", right: "20%" }}
-        target="blank"
-        href="https://www.linkedin.com/in/trudy-painter/"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        LinkedIn
-      </a>
-
-      {/* <a
-        style={{ ...linkStyle, bottom: "15%", right: "20%" }}
-        target="blank"
-        href="TrudyPainter_Resume.pdf"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        Resume
-      </a> */}
-
-      {/* <a
-        style={{ ...linkStyle, bottom: "15%", right: "20%" }}
-        target="_blank"
-        href="https://docs.google.com/spreadsheets/d/1pBokIjBV7lxDYNxqqxfLrNb7h3h4GuhWSbrrTGd9Fho/edit#gid=0"
-        onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-        onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-      >
-        Full CV
-      </a> */}
-
+      {/* Quadrant labels */}
       <div
         style={{
           ...labelStyle,
