@@ -236,7 +236,7 @@ export default function BoidBackground() {
       // Setup offscreen canvas for threshold drawing
       offCtx.fillStyle = "rgb(0, 45, 112)"; // darker blue for the offscreen canvas
       offCtx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
-      offCtx.globalCompositeOperation = "darker";
+      offCtx.globalCompositeOperation = "darken";
 
       // Get current time for autonomous movement
       const currentTime = performance.now() * 0.001;
