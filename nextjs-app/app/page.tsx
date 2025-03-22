@@ -10,7 +10,7 @@ import { LandingSections } from "@/app/components/LandingSections";
 import { ProjectArchive } from "@/app/components/ProjectArchive";
 import Header from "@/app/components/Header";
 import { CustomFooter } from "@/app/components/CustomFooter";
-import BoidBackground from "@/app/components/BoidBackground";
+import DotsBackground from "@/app/components/DotsBackground";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   projectArchiveQuery,
@@ -267,9 +267,9 @@ export default async function Page() {
   return (
     <>
       {/* section for hero */}
-      <section className="fixed z-10 h-[100vh] top-0 left-0 w-full bg-gray-500">
-        {/* Boid Background */}
-        <BoidBackground />
+      <section className="fixed z-10 h-[100vh] top-0 left-0 w-full bg-[#000080]">
+        {/* Dots Background */}
+        <DotsBackground />
 
         <div className="container relative z-20 mx-auto px-4 h-[70vh] flex items-center max-w-content">
           <div className="w-full flex flex-col md:flex-row gap-8">

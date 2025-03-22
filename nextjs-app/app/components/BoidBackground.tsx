@@ -234,9 +234,9 @@ export default function BoidBackground() {
       offCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
       // Setup offscreen canvas for threshold drawing
-      offCtx.fillStyle = "black";
+      offCtx.fillStyle = "rgb(0, 45, 112)"; // darker blue for the offscreen canvas
       offCtx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
-      offCtx.globalCompositeOperation = "lighter";
+      offCtx.globalCompositeOperation = "darker";
 
       // Get current time for autonomous movement
       const currentTime = performance.now() * 0.001;
@@ -319,9 +319,9 @@ export default function BoidBackground() {
           metaball.radius
         );
 
-        gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
-        gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.5)");
-        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+        gradient.addColorStop(0, "rgba(210, 255, 235, 1)"); // Light greenish center
+        gradient.addColorStop(0.5, "rgba(160, 220, 255, 0.5)"); // Light bluish mid
+        gradient.addColorStop(1, "rgba(190, 230, 255, 0)"); // Transparent blue-green outer
 
         offCtx.fillStyle = gradient;
         offCtx.beginPath();
@@ -339,7 +339,7 @@ export default function BoidBackground() {
       const data = imageData.data;
 
       // Create the final image with metaball color
-      ctx.fillStyle = "rgb(55, 65, 81)"; // gray-600
+      ctx.fillStyle = "rgb(0, 61, 153)"; // dark blue background
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Create a colored metaball effect
@@ -358,18 +358,18 @@ export default function BoidBackground() {
         // Apply threshold and coloring to main canvas with more subtle effect
         if (brightness > 50) {
           // Lower threshold for more coverage
-          // Inside the metaball - a lighter gray
-          finalData[i] = 75; // R - slightly lighter
-          finalData[i + 1] = 85; // G - gray
-          finalData[i + 2] = 99; // B - 500
+          // Inside the metaball - light green
+          finalData[i] = 41; // R
+          finalData[i + 1] = 173; // G
+          finalData[i + 2] = 138; // B
           finalData[i + 3] = 230; // Slightly transparent for subtle effect
         } else if (brightness > 10) {
           // Lower outer threshold too
-          // Outer edge of metaball - darker
+          // Outer edge of metaball - lighter blue
           const alpha = brightness / 10;
-          finalData[i] = 55; // R - darker
-          finalData[i + 1] = 65; // G - gray
-          finalData[i + 2] = 81; // B - 600
+          finalData[i] = 30; // R
+          finalData[i + 1] = 102; // G
+          finalData[i + 2] = 245; // B
           finalData[i + 3] = Math.min(200, 80 + alpha * 120); // More transparent edges
         }
         // Everything else remains the background color

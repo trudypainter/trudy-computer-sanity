@@ -39,67 +39,27 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityFileAsset = {
+export type About = {
   _id: string;
-  _type: "sanity.fileAsset";
+  _type: "about";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
-
-export type Geopoint = {
-  _type: "geopoint";
-  lat?: number;
-  lng?: number;
-  alt?: number;
-};
-
-export type CallToAction = {
-  _type: "callToAction";
-  heading: string;
-  text?: string;
-  buttonText?: string;
-  link?: Link;
-};
-
-export type Link = {
-  _type: "link";
-  linkType?: "href" | "page" | "post";
-  href?: string;
-  page?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "page";
+  profileImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
   };
-  post?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "post";
-  };
-  openInNewTab?: boolean;
-};
-
-export type InfoSection = {
-  _type: "infoSection";
-  heading?: string;
-  subheading?: string;
-  content?: Array<{
+  photographerName: string;
+  photographerUrl: string;
+  fullBio: Array<{
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -109,21 +69,7 @@ export type InfoSection = {
     style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
     listItem?: "bullet" | "number";
     markDefs?: Array<{
-      linkType?: "href" | "page" | "post";
       href?: string;
-      page?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "page";
-      };
-      post?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "post";
-      };
-      openInNewTab?: boolean;
       _type: "link";
       _key: string;
     }>;
@@ -131,115 +77,29 @@ export type InfoSection = {
     _type: "block";
     _key: string;
   }>;
-};
-
-export type BlockContent = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
+  bioSections?: Array<{
+    title: string;
+    content: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    _type: "section";
     _key: string;
   }>;
-  style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-  listItem?: "bullet" | "number";
-  markDefs?: Array<{
-    linkType?: "href" | "page" | "post";
-    href?: string;
-    page?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "page";
-    };
-    post?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "post";
-    };
-    openInNewTab?: boolean;
-    _type: "link";
-    _key: string;
-  }>;
-  level?: number;
-  _type: "block";
-  _key: string;
-}>;
-
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  slug: Slug;
-  heading: string;
-  subheading?: string;
-  pageBuilder?: Array<{
-    _key: string;
-  } & CallToAction | {
-    _key: string;
-  } & InfoSection>;
-};
-
-export type Post = {
-  _id: string;
-  _type: "post";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  slug: Slug;
-  content?: BlockContent;
-  excerpt?: string;
-  coverImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  date?: string;
-  author?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "person";
-  };
-};
-
-export type Person = {
-  _id: string;
-  _type: "person";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  firstName: string;
-  lastName: string;
-  picture: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
 };
 
 export type Settings = {
@@ -280,6 +140,421 @@ export type Settings = {
     metadataBase?: string;
     _type: "image";
   };
+};
+
+export type Callout = {
+  _type: "callout";
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
+
+export type PostLink = {
+  _type: "postLink";
+  displayText: string;
+  href: string;
+};
+
+export type InfoSection = {
+  _type: "infoSection";
+  heading?: string;
+  subheading?: string;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      linkType?: "href" | "page" | "post";
+      href?: string;
+      page?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "page";
+      };
+      post?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "post";
+      };
+      openInNewTab?: boolean;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    width?: "full" | "large" | "medium" | "small";
+    _type: "image";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    caption?: string;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "video";
+    _key: string;
+  } | {
+    url: string;
+    caption?: string;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "vimeoEmbed";
+    _key: string;
+  } | {
+    url: string;
+    caption?: string;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "youtubeEmbed";
+    _key: string;
+  } | {
+    url: string;
+    caption?: string;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "loomEmbed";
+    _key: string;
+  } | {
+    url: string;
+    caption?: string;
+    _type: "instagramEmbed";
+    _key: string;
+  } | {
+    url: string;
+    _type: "twitterEmbed";
+    _key: string;
+  } | {
+    style?: string;
+    _type: "divider";
+    _key: string;
+  } | {
+    _key: string;
+  } & Callout | {
+    url: string;
+    isCollapsed?: boolean;
+    zoom?: number;
+    aspectRatio?: "desktop" | "mobile";
+    _type: "iframeEmbed";
+    _key: string;
+  }>;
+};
+
+export type CallToAction = {
+  _type: "callToAction";
+  heading: string;
+  text?: string;
+  buttonText?: string;
+  link?: Link;
+};
+
+export type Link = {
+  _type: "link";
+  linkType?: "href" | "page" | "post";
+  href?: string;
+  page?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "page";
+  };
+  post?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "post";
+  };
+  openInNewTab?: boolean;
+};
+
+export type BlockContent = Array<{
+  children?: Array<{
+    marks?: Array<string>;
+    text?: string;
+    _type: "span";
+    _key: string;
+  }>;
+  style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+  listItem?: "bullet" | "number";
+  markDefs?: Array<{
+    linkType?: "href" | "page" | "post";
+    href?: string;
+    page?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page";
+    };
+    post?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "post";
+    };
+    openInNewTab?: boolean;
+    _type: "link";
+    _key: string;
+  }>;
+  level?: number;
+  _type: "block";
+  _key: string;
+} | {
+  asset?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+  };
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
+  caption?: string;
+  width?: "full" | "large" | "medium" | "small";
+  _type: "image";
+  _key: string;
+} | {
+  asset?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+  };
+  caption?: string;
+  width?: number;
+  hasBorder?: boolean;
+  showControls?: boolean;
+  _type: "video";
+  _key: string;
+} | {
+  url: string;
+  caption?: string;
+  width?: number;
+  hasBorder?: boolean;
+  showControls?: boolean;
+  _type: "vimeoEmbed";
+  _key: string;
+} | {
+  url: string;
+  caption?: string;
+  width?: number;
+  hasBorder?: boolean;
+  showControls?: boolean;
+  _type: "youtubeEmbed";
+  _key: string;
+} | {
+  url: string;
+  caption?: string;
+  width?: number;
+  hasBorder?: boolean;
+  showControls?: boolean;
+  _type: "loomEmbed";
+  _key: string;
+} | {
+  url: string;
+  caption?: string;
+  _type: "instagramEmbed";
+  _key: string;
+} | {
+  url: string;
+  _type: "twitterEmbed";
+  _key: string;
+} | {
+  style?: string;
+  _type: "divider";
+  _key: string;
+} | {
+  _key: string;
+} & Callout | {
+  url: string;
+  isCollapsed?: boolean;
+  zoom?: number;
+  aspectRatio?: "desktop" | "mobile";
+  _type: "iframeEmbed";
+  _key: string;
+}>;
+
+export type HeaderBioBits = {
+  _id: string;
+  _type: "headerBioBits";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  content: string;
+  order: number;
+};
+
+export type LandingSection = {
+  _id: string;
+  _type: "landingSection";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  description: string;
+  rows?: Array<{
+    posts?: Array<{
+      post: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "post";
+      };
+      width: "full" | "2/3" | "1/2" | "1/3";
+      _type: "featuredPost";
+      _key: string;
+    }>;
+    _type: "row";
+    _key: string;
+  }>;
+  order: number;
+};
+
+export type Location = {
+  _id: string;
+  _type: "location";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
+  coordinates?: Geopoint;
+  description?: string;
+};
+
+export type Geopoint = {
+  _type: "geopoint";
+  lat?: number;
+  lng?: number;
+  alt?: number;
+};
+
+export type Tag = {
+  _id: string;
+  _type: "tag";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
+  description?: string;
+};
+
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
+  heading: string;
+  subheading?: string;
+  pageBuilder?: Array<{
+    _key: string;
+  } & CallToAction | {
+    _key: string;
+  } & InfoSection>;
+};
+
+export type Post = {
+  _id: string;
+  _type: "post";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  content?: BlockContent;
+  excerpt?: string;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  projectLocation: "Google" | "MIT Media Lab" | "Personal Project" | "MIT Class";
+  projectYear: "2025" | "2024" | "2023" | "2022" | "2021" | "2020";
+  projectTags: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "tag";
+  }>;
+  date?: string;
+  links?: Array<{
+    _key: string;
+  } & PostLink>;
+};
+
+export type SanityFileAsset = {
+  _id: string;
+  _type: "sanity.fileAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  source?: SanityAssetSourceData;
 };
 
 export type SanityImageCrop = {
@@ -337,6 +612,12 @@ export type SanityImageMetadata = {
   blurHash?: string;
   hasAlpha?: boolean;
   isOpaque?: boolean;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
 };
 
 export type SanityAssistInstructionTask = {
@@ -460,7 +741,7 @@ export type SanityAssistSchemaTypeField = {
   } & SanityAssistInstruction>;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | CallToAction | Link | InfoSection | BlockContent | Page | Post | Person | Slug | Settings | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | About | Settings | Callout | PostLink | InfoSection | CallToAction | Link | BlockContent | HeaderBioBits | LandingSection | Location | Geopoint | Tag | Page | Post | SanityFileAsset | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -553,6 +834,108 @@ export type GetPageQueryResult = {
       level?: number;
       _type: "block";
       _key: string;
+    } | {
+      _key: string;
+      _type: "callout";
+      content?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }>;
+      markDefs: null;
+    } | {
+      style?: string;
+      _type: "divider";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string;
+      isCollapsed?: boolean;
+      zoom?: number;
+      aspectRatio?: "desktop" | "mobile";
+      _type: "iframeEmbed";
+      _key: string;
+      markDefs: null;
+    } | {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      caption?: string;
+      width?: "full" | "large" | "medium" | "small";
+      _type: "image";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string;
+      caption?: string;
+      _type: "instagramEmbed";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string;
+      caption?: string;
+      width?: number;
+      hasBorder?: boolean;
+      showControls?: boolean;
+      _type: "loomEmbed";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string;
+      _type: "twitterEmbed";
+      _key: string;
+      markDefs: null;
+    } | {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+      };
+      caption?: string;
+      width?: number;
+      hasBorder?: boolean;
+      showControls?: boolean;
+      _type: "video";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string;
+      caption?: string;
+      width?: number;
+      hasBorder?: boolean;
+      showControls?: boolean;
+      _type: "vimeoEmbed";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string;
+      caption?: string;
+      width?: number;
+      hasBorder?: boolean;
+      showControls?: boolean;
+      _type: "youtubeEmbed";
+      _key: string;
+      markDefs: null;
     }> | null;
   }> | null;
 } | null;
@@ -588,22 +971,7 @@ export type AllPostsQueryResult = Array<{
     _type: "image";
   };
   date: string;
-  author: {
-    firstName: string;
-    lastName: string;
-    picture: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    };
-  } | null;
+  author: null;
 }>;
 // Variable: morePostsQuery
 // Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
@@ -626,22 +994,7 @@ export type MorePostsQueryResult = Array<{
     _type: "image";
   };
   date: string;
-  author: {
-    firstName: string;
-    lastName: string;
-    picture: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    };
-  } | null;
+  author: null;
 }>;
 // Variable: postQuery
 // Query: *[_type == "post" && slug.current == $slug][0] {    content[]{      ...,      _type == "vimeoEmbed" => {        ...,        url,        caption      },      _type == "youtubeEmbed" => {        ...,        url,        caption      },      _type == "video" => {        ...,        asset,        caption      },      markDefs[]{        ...,          _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},    projectLocation,    projectYear,    "projectTags": projectTags[]->{ _id, name, slug },    "links": links[] {      displayText,      href    }  }
@@ -667,6 +1020,108 @@ export type PostQueryResult = {
     level?: number;
     _type: "block";
     _key: string;
+  } | {
+    _key: string;
+    _type: "callout";
+    content?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    markDefs: null;
+  } | {
+    style?: string;
+    _type: "divider";
+    _key: string;
+    markDefs: null;
+  } | {
+    url: string;
+    isCollapsed?: boolean;
+    zoom?: number;
+    aspectRatio?: "desktop" | "mobile";
+    _type: "iframeEmbed";
+    _key: string;
+    markDefs: null;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    width?: "full" | "large" | "medium" | "small";
+    _type: "image";
+    _key: string;
+    markDefs: null;
+  } | {
+    url: string;
+    caption?: string;
+    _type: "instagramEmbed";
+    _key: string;
+    markDefs: null;
+  } | {
+    url: string;
+    caption?: string;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "loomEmbed";
+    _key: string;
+    markDefs: null;
+  } | {
+    url: string;
+    _type: "twitterEmbed";
+    _key: string;
+    markDefs: null;
+  } | {
+    asset: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    } | null;
+    caption: string | null;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "video";
+    _key: string;
+    markDefs: null;
+  } | {
+    url: string;
+    caption: string | null;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "vimeoEmbed";
+    _key: string;
+    markDefs: null;
+  } | {
+    url: string;
+    caption: string | null;
+    width?: number;
+    hasBorder?: boolean;
+    showControls?: boolean;
+    _type: "youtubeEmbed";
+    _key: string;
+    markDefs: null;
   }> | null;
   _id: string;
   status: "draft" | "published";
@@ -686,26 +1141,18 @@ export type PostQueryResult = {
     _type: "image";
   };
   date: string;
-  author: {
-    firstName: string;
-    lastName: string;
-    picture: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    };
-  } | null;
-  projectLocation: null;
-  projectYear: null;
-  projectTags: null;
-  links: null;
+  author: null;
+  projectLocation: "Google" | "MIT Class" | "MIT Media Lab" | "Personal Project";
+  projectYear: "2020" | "2021" | "2022" | "2023" | "2024" | "2025";
+  projectTags: Array<{
+    _id: string;
+    name: string;
+    slug: Slug;
+  }>;
+  links: Array<{
+    displayText: string;
+    href: string;
+  }> | null;
 } | null;
 // Variable: postPagesSlugs
 // Query: *[_type == "post" && defined(slug.current)]  {"slug": slug.current}
@@ -719,7 +1166,58 @@ export type PagesSlugsResult = Array<{
 }>;
 // Variable: aboutPageQuery
 // Query: *[_type == "about"][0]{    profileImage {      asset,      alt,    },    photographerName,    photographerUrl,    fullBio,    bioSections[] {      title,      content    }  }
-export type AboutPageQueryResult = null;
+export type AboutPageQueryResult = {
+  profileImage: {
+    asset: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    } | null;
+    alt: string;
+  };
+  photographerName: string;
+  photographerUrl: string;
+  fullBio: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  bioSections: Array<{
+    title: string;
+    content: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+  }> | null;
+} | null;
 // Variable: allPostsCountQuery
 // Query: *[_type == "post"] {    _id,    _type,    title,    "isDraft": _id in path("drafts.**"),    _updatedAt  }
 export type AllPostsCountQueryResult = Array<{
@@ -768,9 +1266,13 @@ export type ProjectArchiveQueryResult = Array<{
   hasCoverImage: true;
   date: string;
   hasDate: false | true;
-  location: null;
-  year: null;
-  projectTags: null;
+  location: "Google" | "MIT Class" | "MIT Media Lab" | "Personal Project";
+  year: "2020" | "2021" | "2022" | "2023" | "2024" | "2025";
+  projectTags: Array<{
+    _id: string;
+    name: string;
+    slug: Slug;
+  }>;
   isPublished: boolean;
   inDrafts: boolean;
   _createdAt: string;
@@ -778,7 +1280,12 @@ export type ProjectArchiveQueryResult = Array<{
 }>;
 // Variable: headerBioBitsQuery
 // Query: *[_type == "headerBioBits"] | order(order asc) {    _id,    title,    content,    order  }
-export type HeaderBioBitsQueryResult = Array<never>;
+export type HeaderBioBitsQueryResult = Array<{
+  _id: string;
+  title: string;
+  content: string;
+  order: number;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
