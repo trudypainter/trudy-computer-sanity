@@ -9,6 +9,7 @@ import {
   EarthGlobeIcon,
   ThListIcon,
 } from '@sanity/icons'
+import React from 'react'
 
 /**
  * This is the schema definition for the rich text fields used for
@@ -107,9 +108,7 @@ export const blockContent = defineType({
     defineArrayMember({
       type: 'image',
       icon: ImageIcon,
-      options: {
-        hotspot: true,
-      },
+      options: {hotspot: true},
       fields: [
         defineField({
           name: 'alt',
@@ -152,9 +151,7 @@ export const blockContent = defineType({
       type: 'file',
       title: 'Video',
       icon: VideoIcon,
-      options: {
-        accept: 'video/*',
-      },
+      options: {accept: 'video/*'},
       fields: [
         defineField({
           name: 'caption',
@@ -362,29 +359,15 @@ export const blockContent = defineType({
       type: 'object',
       title: 'Divider',
       icon: ThListIcon,
-      fields: [
-        defineField({
-          name: 'style',
-          type: 'string',
-          initialValue: 'default',
-          hidden: true,
-        }),
-      ],
+      fields: [defineField({name: 'style', type: 'string', initialValue: 'default', hidden: true})],
       preview: {
         prepare() {
-          return {
-            title: '───────────',
-          }
+          return {title: 'Divider', media: ThListIcon}
         },
       },
     }),
     // Callout
-    defineArrayMember({
-      name: 'callout',
-      type: 'callout',
-      title: 'Callout',
-      icon: BlockquoteIcon,
-    }),
+    defineArrayMember({name: 'callout', type: 'callout', title: 'Callout', icon: BlockquoteIcon}),
     // Iframe Embed
     defineArrayMember({
       name: 'iframeEmbed',
@@ -429,16 +412,12 @@ export const blockContent = defineType({
         }),
       ],
       preview: {
-        select: {
-          url: 'url',
-          isCollapsed: 'isCollapsed',
-          zoom: 'zoom',
-          aspectRatio: 'aspectRatio',
-        },
+        select: {url: 'url', isCollapsed: 'isCollapsed', zoom: 'zoom', aspectRatio: 'aspectRatio'},
         prepare({url, isCollapsed, zoom, aspectRatio}) {
           return {
             title: 'Website Embed',
             subtitle: `${url} ${isCollapsed ? '(collapsed)' : ''} - ${zoom * 100}% - ${aspectRatio}`,
+            media: EarthGlobeIcon,
           }
         },
       },

@@ -63,15 +63,9 @@ export const landingSection = defineType({
                     },
                   ],
                   preview: {
-                    select: {
-                      title: 'post.title',
-                      width: 'width',
-                    },
+                    select: {title: 'post.title', width: 'width'},
                     prepare({title = 'No title', width}) {
-                      return {
-                        title,
-                        subtitle: `Width: ${width}`,
-                      }
+                      return {title, subtitle: `Width: ${width}`, media: DocumentIcon}
                     },
                   },
                 },
@@ -79,12 +73,11 @@ export const landingSection = defineType({
             },
           ],
           preview: {
-            select: {
-              posts: 'posts',
-            },
+            select: {posts: 'posts'},
             prepare({posts = []}) {
               return {
                 title: `Row with ${posts.length} post${posts.length === 1 ? '' : 's'}`,
+                media: DocumentIcon,
               }
             },
           },
@@ -101,15 +94,13 @@ export const landingSection = defineType({
     }),
   ],
   preview: {
-    select: {
-      title: 'title',
-      rows: 'rows',
-    },
+    select: {title: 'title', rows: 'rows'},
     prepare({title, rows = []}) {
-      const totalPosts = rows.reduce((sum, row) => sum + (row.posts?.length || 0), 0)
+      const totalPosts = rows.reduce((sum: number, row: any) => sum + (row.posts?.length || 0), 0)
       return {
         title,
         subtitle: `${totalPosts} featured post${totalPosts === 1 ? '' : 's'} in ${rows.length} row${rows.length === 1 ? '' : 's'}`,
+        media: DocumentIcon,
       }
     },
   },

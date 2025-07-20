@@ -60,12 +60,7 @@ export const settings = defineType({
       title: 'Open Graph Image',
       type: 'image',
       description: 'Displayed on social cards and search engine results.',
-      options: {
-        hotspot: true,
-        aiAssist: {
-          imageDescriptionField: 'alt',
-        },
-      },
+      options: {hotspot: true},
       fields: [
         defineField({
           name: 'alt',
@@ -98,9 +93,7 @@ export const settings = defineType({
   ],
   preview: {
     prepare() {
-      return {
-        title: 'Settings',
-      }
+      return {title: 'Settings', media: CogIcon}
     },
   },
 })

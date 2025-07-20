@@ -31,11 +31,7 @@ export const post = defineType({
       },
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'content',
-      title: 'Content',
-      type: 'blockContent',
-    }),
+    defineField({name: 'content', title: 'Content', type: 'blockContent'}),
     defineField({
       name: 'excerpt',
       title: 'Excerpt',
@@ -46,12 +42,7 @@ export const post = defineType({
       name: 'coverImage',
       title: 'Cover Image',
       type: 'image',
-      options: {
-        hotspot: true,
-        aiAssist: {
-          imageDescriptionField: 'alt',
-        },
-      },
+      options: {hotspot: true},
       fields: [
         {
           name: 'alt',
@@ -105,12 +96,7 @@ export const post = defineType({
       name: 'projectTags',
       title: 'Project Tags',
       type: 'array',
-      of: [
-        {
-          type: 'reference',
-          to: [{type: 'tag'}],
-        },
-      ],
+      of: [{type: 'reference', to: [{type: 'tag'}]}],
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -119,26 +105,14 @@ export const post = defineType({
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
     }),
-    defineField({
-      name: 'links',
-      title: 'Links',
-      type: 'array',
-      of: [{type: 'postLink'}],
-    }),
+    defineField({name: 'links', title: 'Links', type: 'array', of: [{type: 'postLink'}]}),
   ],
   // List preview configuration. https://www.sanity.io/docs/previews-list-views
   preview: {
-    select: {
-      title: 'title',
-      date: 'date',
-      media: 'coverImage',
-    },
+    select: {title: 'title', date: 'date', media: 'coverImage'},
     prepare({title, media, date}) {
-      return {
-        title,
-        subtitle: date ? `on ${format(parseISO(date), 'LLL d, yyyy')}` : '',
-        media,
-      }
+      const subtitles = [date ? `on ${format(parseISO(date), 'LLL d, yyyy')}` : '']
+      return {title, media, subtitle: subtitles.join(' '), icon: DocumentTextIcon}
     },
   },
 })
