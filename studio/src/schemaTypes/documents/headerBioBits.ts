@@ -15,7 +15,8 @@ export const headerBioBits = defineType({
     defineField({
       name: 'content',
       title: 'Content',
-      type: 'text',
+      type: 'array',
+      of: [{type: 'block'}],
       description: 'The content text for this bio section',
       validation: (Rule) => Rule.required(),
     }),
@@ -28,15 +29,9 @@ export const headerBioBits = defineType({
     }),
   ],
   preview: {
-    select: {
-      title: 'title',
-      content: 'content',
-    },
+    select: {title: 'title', content: 'content'},
     prepare({title, content}) {
-      return {
-        title: title,
-        subtitle: content,
-      }
+      return {title: title, subtitle: content}
     },
   },
 })

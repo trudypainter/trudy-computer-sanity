@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Sparkles, Pen, Check, X, RefreshCw } from "lucide-react";
+import CustomPortableText from "./sanity/PortableText";
+import { PortableTextBlock } from "next-sanity";
 
 interface BioBit {
   _id: string;
   title: string;
-  content: string;
+  content: PortableTextBlock[];
   order: number;
   tags: { name: string; slug: string }[];
   location: { name: string; slug: string; coordinates: number[] };
@@ -27,7 +29,12 @@ export const BioBits = ({ data }: { data: BioBit[] }) => {
             <h2 className="font-mono text-sm text-white/60">
               {bit.title.toUpperCase()}
             </h2>
-            <div className="text-base text-white">{bit.content}</div>
+            <div className="text-base text-white">
+              <CustomPortableText
+                value={bit.content}
+                className="prose-a:underline text-white prose-a:text-white"
+              />
+            </div>
           </section>
         ))}
       </div>

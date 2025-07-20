@@ -34,6 +34,8 @@ export default function CustomPortableText({
   className?: string;
   value: PortableTextBlock[];
 }) {
+  let isFirstVideo = true;
+
   const components: PortableTextComponents = {
     block: {
       h1: ({ children, value }) => (
@@ -108,17 +110,25 @@ export default function CustomPortableText({
         />
       ),
       instagramEmbed: ({ value }) => <InstagramEmbed url={value.url} />,
-      iframeEmbed: ({ value }) => (
-        <IframeEmbed
-          url={value.url}
-          isCollapsed={value.isCollapsed}
-          zoom={value.zoom}
-          aspectRatio={value.aspectRatio}
-        />
-      ),
+      iframeEmbed: ({ value }) => {
+        const isFirst = isFirstVideo;
+        isFirstVideo = false;
+        return (
+          <IframeEmbed
+            url={value.url}
+            isCollapsed={value.isCollapsed}
+            zoom={value.zoom}
+            aspectRatio={value.aspectRatio}
+            isFirst={isFirst}
+          />
+        );
+      },
       callout: ({ value }) => <Callout value={value} />,
       divider: () => <hr className="my-8 border-0 border-b border-gray-200" />,
       video: ({ value }) => {
+        const isFirst = isFirstVideo;
+        isFirstVideo = false;
+
         const videoUrl = client.config().projectId
           ? `https://cdn.sanity.io/files/${client.config().projectId}/${client.config().dataset}/${value.asset._ref
               .replace("file-", "")
@@ -141,7 +151,7 @@ export default function CustomPortableText({
           <div className="my-4" style={widthStyle}>
             <div className={borderClass}>
               <video
-                autoPlay
+                autoPlay={isFirst}
                 loop
                 muted={!value.showControls}
                 controls={value.showControls}

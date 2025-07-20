@@ -8,6 +8,7 @@ interface Props {
   isCollapsed?: boolean;
   zoom?: number;
   aspectRatio?: "desktop" | "mobile";
+  isFirst?: boolean;
 }
 
 export default function IframeEmbed({
@@ -16,6 +17,7 @@ export default function IframeEmbed({
   isCollapsed: initialCollapsed = false,
   zoom: initialZoom = 0.7,
   aspectRatio = "desktop",
+  isFirst = false,
 }: Props) {
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -82,10 +84,7 @@ export default function IframeEmbed({
           aspectRatio: "9/16",
           margin: "0 auto",
         }
-      : {
-          width: "100%",
-          aspectRatio: "16/9",
-        };
+      : { width: "100%", aspectRatio: "16/9" };
 
   // Calculate iframe dimensions and scale using responsive zoom
   const iframeWrapperStyle = {
@@ -182,7 +181,9 @@ export default function IframeEmbed({
               <iframe
                 src={!isCollapsed ? getZoomedUrl(url) : "about:blank"}
                 className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow={`accelerometer; ${
+                  isFirst ? "autoplay;" : ""
+                } clipboard-write; encrypted-media; gyroscope; picture-in-picture`}
                 allowFullScreen
                 onLoad={() => setIframeLoaded(true)}
                 style={{ colorScheme: "light" }}

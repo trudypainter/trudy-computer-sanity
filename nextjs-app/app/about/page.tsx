@@ -29,17 +29,7 @@ export default async function AboutPage() {
                     alt: about.profileImage.alt ?? undefined,
                   }}
                 />
-              </div>
-              <p className="pt-1 text-sm text-gray-500 tracking-tight">
-                Photo by{" "}
-                <Link
-                  href={about.photographerUrl}
-                  target="_blank"
-                  className="text-gray-500 underline decoration-1 hover:decoration-2 tracking-tight"
-                >
-                  {about.photographerName}
-                </Link>
-              </p>
+              </div>{" "}
             </div>
           </div>
 
