@@ -29,9 +29,9 @@ export const headerBioBits = defineType({
     }),
   ],
   preview: {
-    select: {title: 'title', content: 'content'},
-    prepare({title, content}) {
-      return {title: title, subtitle: content}
+    select: {title: 'title'},
+    prepare({title}) {
+      return {title: title}
     },
   },
 })
