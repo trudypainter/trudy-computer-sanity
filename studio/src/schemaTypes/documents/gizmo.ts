@@ -34,6 +34,12 @@ export const gizmo = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'poster',
+      title: 'Poster Image',
+      type: 'image',
+      description: "First frame of the video. Shown while it loads, or when the browser blocks autoplay.",
+    }),
+    defineField({
       name: 'order',
       title: 'Order',
       type: 'number',
