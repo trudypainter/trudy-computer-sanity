@@ -5,6 +5,7 @@ import {link} from './objects/link'
 import {postLink} from './objects/postLink'
 import {page} from './documents/page'
 import {post} from './documents/post'
+import {gizmo} from './documents/gizmo'
 import {settings} from './singletons/settings'
 import {tag} from './documents/tag'
 import {location} from './documents/location'
@@ -19,6 +20,7 @@ export const schemaTypes = [
   // Document types
   page,
   post,
+  gizmo,
   tag,
   location,
   landingSection,
